@@ -2,7 +2,8 @@ package fenix
 
 import (
 	"fmt"
-	"os"
+
+	"github.com/joho/godotenv"
 )
 
 const version = "1.0.0"
@@ -29,6 +30,13 @@ func (f *Fenix) New(rootPath string) error {
 		return err
 	}
 
+	// read .env
+	err = godotenv.Load(rootPath + "/.env")
+	if err != nil {
+		fmt.Println("Error loading .env file")
+		return err
+	}
+
 	return nil
 }
 
@@ -48,21 +56,6 @@ func (f *Fenix) checkDotEnv(path string) error {
 	err := f.CreateDirIfNotExist(fmt.Sprintf("%s/.env", path))
 	if err != nil {
 		return err
-	}
-	return nil
-}
-
-func (f *Fenix) CreateFileIfNotExists(path string) error {
-	var _, err = os.Stat(path)
-	if os.IsNotExist(err) {
-		var file, err = os.Create(path)
-		if err != nil {
-			return err
-		}
-
-		defer func(file *os.File) {
-			_ = file.Close()
-		}(file)
 	}
 	return nil
 }
