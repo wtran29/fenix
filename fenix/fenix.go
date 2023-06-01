@@ -3,9 +3,12 @@ package fenix
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
+	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 )
 
@@ -18,6 +21,7 @@ type Fenix struct {
 	ErrorLog *log.Logger
 	InfoLog  *log.Logger
 	RootPath string
+	Routes   *chi.Mux
 	config   config
 }
 
@@ -57,6 +61,7 @@ func (f *Fenix) New(rootPath string) error {
 	f.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
 	f.Version = version
 	f.RootPath = rootPath
+	f.Routes = f.routes().(*chi.Mux)
 
 	f.config = config{
 		port:     os.Getenv("PORT"),
@@ -66,6 +71,7 @@ func (f *Fenix) New(rootPath string) error {
 	return nil
 }
 
+// initializes the necessary folders for Fenix
 func (f *Fenix) Init(p initPaths) error {
 	root := p.rootPath
 	for _, path := range p.folderNames {
@@ -76,6 +82,22 @@ func (f *Fenix) Init(p initPaths) error {
 		}
 	}
 	return nil
+}
+
+// Startup the web server
+func (f *Fenix) ListenAndServe() {
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),
+		ErrorLog:     f.ErrorLog,
+		Handler:      f.routes(),
+		IdleTimeout:  30 * time.Second,
+		ReadTimeout:  30 * time.Second,
+		WriteTimeout: 600 * time.Second,
+	}
+
+	f.InfoLog.Printf("Listening on port %s", os.Getenv("PORT"))
+	err := srv.ListenAndServe()
+	f.ErrorLog.Fatal(err)
 }
 
 func (f *Fenix) checkDotEnv(path string) error {
