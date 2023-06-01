@@ -24,3 +24,6 @@ go.work
 *tmp
 
 *.env
+
+# Go vendor
+vendor/
