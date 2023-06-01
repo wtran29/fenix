@@ -18,6 +18,13 @@ type Fenix struct {
 	ErrorLog *log.Logger
 	InfoLog  *log.Logger
 	RootPath string
+	config   config
+}
+
+type config struct {
+	port     string
+	renderer string // template engine used
+
 }
 
 func (f *Fenix) New(rootPath string) error {
@@ -49,6 +56,12 @@ func (f *Fenix) New(rootPath string) error {
 	f.ErrorLog = errorLog
 	f.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
 	f.Version = version
+	f.RootPath = rootPath
+
+	f.config = config{
+		port:     os.Getenv("PORT"),
+		renderer: os.Getenv("RENDERER"),
+	}
 
 	return nil
 }
