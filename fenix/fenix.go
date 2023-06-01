@@ -2,6 +2,9 @@ package fenix
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -9,9 +12,12 @@ import (
 const version = "1.0.0"
 
 type Fenix struct {
-	AppName string
-	Debug   bool
-	Version string
+	AppName  string
+	Debug    bool
+	Version  string
+	ErrorLog *log.Logger
+	InfoLog  *log.Logger
+	RootPath string
 }
 
 func (f *Fenix) New(rootPath string) error {
@@ -37,6 +43,13 @@ func (f *Fenix) New(rootPath string) error {
 		return err
 	}
 
+	// create loggers
+	infoLog, errorLog := f.startLoggers()
+	f.InfoLog = infoLog
+	f.ErrorLog = errorLog
+	f.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
+	f.Version = version
+
 	return nil
 }
 
@@ -58,4 +71,14 @@ func (f *Fenix) checkDotEnv(path string) error {
 		return err
 	}
 	return nil
+}
+
+func (f *Fenix) startLoggers() (*log.Logger, *log.Logger) {
+	var infoLog *log.Logger
+	var errorLog *log.Logger
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	return infoLog, errorLog
 }

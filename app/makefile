@@ -1,4 +1,4 @@
-BINARY_NAME=fenixApp
+BINARY_NAME=fenixApp.exe
 
 ## build: builds all binaries
 build:
@@ -8,13 +8,13 @@ build:
 
 run: build
 	echo Starting Fenix...
-	.\tmp\${BINARY_NAME} &
+	./tmp/${BINARY_NAME} &
 	echo Fenix started!
 
 clean:
 	echo Cleaning...
 	go clean
-	del .\tmp\${BINARY_NAME}
+	del ./tmp/${BINARY_NAME}
 	echo Cleaned!
 
 test:

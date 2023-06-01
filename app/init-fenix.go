@@ -21,7 +21,8 @@ func initApplication() *application {
 	}
 
 	fnx.AppName = "testapp"
-	fnx.Debug = true
+
+	fnx.InfoLog.Println("DEBUG is set to", fnx.Debug)
 
 	app := &application{
 		App: fnx,
