@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
+	"github.com/wtran/fenix/render"
 )
 
 const version = "1.0.0"
@@ -22,6 +23,7 @@ type Fenix struct {
 	InfoLog  *log.Logger
 	RootPath string
 	Routes   *chi.Mux
+	Render   *render.Render
 	config   config
 }
 
@@ -67,6 +69,8 @@ func (f *Fenix) New(rootPath string) error {
 		port:     os.Getenv("PORT"),
 		renderer: os.Getenv("RENDERER"),
 	}
+
+	f.Render = f.createRenderer(f)
 
 	return nil
 }
@@ -116,4 +120,14 @@ func (f *Fenix) startLoggers() (*log.Logger, *log.Logger) {
 	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	return infoLog, errorLog
+}
+
+func (f *Fenix) createRenderer(fnx *Fenix) *render.Render {
+	renderer := render.Render{
+		Renderer: fnx.config.renderer,
+		RootPath: fnx.RootPath,
+		Port:     fnx.config.port,
+	}
+
+	return &renderer
 }
