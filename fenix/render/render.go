@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
+
+	"github.com/CloudyKit/jet/v6"
 )
 
 type Render struct {
@@ -13,6 +15,7 @@ type Render struct {
 	Secure     bool   // is http mode
 	Port       string
 	ServerName string
+	JetViews   *jet.Set
 }
 
 type TemplateData struct {
@@ -21,7 +24,7 @@ type TemplateData struct {
 	StringMap       map[string]string
 	FloatMap        map[string]float64
 	Data            map[string]interface{}
-	CRSFToken       string
+	CSRFToken       string
 	Port            string
 	ServerName      string
 	Secure          bool

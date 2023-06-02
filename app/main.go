@@ -1,9 +1,14 @@
 package main
 
-import "github.com/wtran/fenix"
+import (
+	"app/handlers"
+
+	"github.com/wtran29/fenix"
+)
 
 type application struct {
-	App *fenix.Fenix
+	App      *fenix.Fenix
+	Handlers *handlers.Handlers
 }
 
 func main() {

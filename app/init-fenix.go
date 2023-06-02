@@ -1,10 +1,11 @@
 package main
 
 import (
+	"app/handlers"
 	"log"
 	"os"
 
-	"github.com/wtran/fenix"
+	"github.com/wtran29/fenix"
 )
 
 func initApplication() *application {
@@ -22,11 +23,17 @@ func initApplication() *application {
 
 	fnx.AppName = "testapp"
 
-	fnx.InfoLog.Println("DEBUG is set to", fnx.Debug)
-
-	app := &application{
+	handlers := &handlers.Handlers{
 		App: fnx,
 	}
+
+	app := &application{
+		App:      fnx,
+		Handlers: handlers,
+	}
+
+	// overwriting the default routes from Fenix with routes from Fenix and our own routes
+	app.App.Routes = app.routes()
 
 	return app
 }

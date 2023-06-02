@@ -8,9 +8,10 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/CloudyKit/jet/v6"
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
-	"github.com/wtran/fenix/render"
+	"github.com/wtran29/fenix/render"
 )
 
 const version = "1.0.0"
@@ -24,6 +25,7 @@ type Fenix struct {
 	RootPath string
 	Routes   *chi.Mux
 	Render   *render.Render
+	JetViews *jet.Set
 	config   config
 }
 
@@ -70,7 +72,14 @@ func (f *Fenix) New(rootPath string) error {
 		renderer: os.Getenv("RENDERER"),
 	}
 
-	f.Render = f.createRenderer(f)
+	var views = jet.NewSet(
+		jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
+		jet.InDevelopmentMode(),
+	)
+
+	f.JetViews = views
+
+	f.createRenderer()
 
 	return nil
 }
@@ -93,7 +102,7 @@ func (f *Fenix) ListenAndServe() {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),
 		ErrorLog:     f.ErrorLog,
-		Handler:      f.routes(),
+		Handler:      f.Routes,
 		IdleTimeout:  30 * time.Second,
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 600 * time.Second,
@@ -122,12 +131,13 @@ func (f *Fenix) startLoggers() (*log.Logger, *log.Logger) {
 	return infoLog, errorLog
 }
 
-func (f *Fenix) createRenderer(fnx *Fenix) *render.Render {
+func (f *Fenix) createRenderer() {
 	renderer := render.Render{
-		Renderer: fnx.config.renderer,
-		RootPath: fnx.RootPath,
-		Port:     fnx.config.port,
+		Renderer: f.config.renderer,
+		RootPath: f.RootPath,
+		Port:     f.config.port,
+		JetViews: f.JetViews,
 	}
 
-	return &renderer
+	f.Render = &renderer
 }
