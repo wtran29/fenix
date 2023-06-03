@@ -10,14 +10,20 @@ var pageData = []struct {
 	name          string
 	renderer      string
 	template      string
+	variables     interface{}
+	data          interface{}
 	errorExpected bool
 	errorMessage  string
 }{
-	{"go_page", "go", "home", false, "error rendering go template"},
+	{"go_page", "go", "home", nil, nil, false, "error rendering go template"},
 	// {"go_page_no_template", "go", "no-file", true, "no error rendering non-existent go template"},
-	{"jet_page", "jet", "home", false, "error rendering go template"},
-	{"jet_page_no_template", "jet", "no-file", true, "no error rendering non-existent jet template"},
-	{"invalid_page_template", "foo", "home", true, "no error rendering non-existent template engine"},
+	{"go_page_no_data", "go", "home", nil, nil, false, "error rendering go template with no data"},
+	{"go_page_with_data", "go", "home", nil, &TemplateData{}, false, "error rendering go template with data"},
+	{"jet_page", "jet", "home", nil, nil, false, "error rendering go template"},
+	{"jet_page_no_template", "jet", "no-file", nil, nil, true, "no error rendering non-existent jet template"},
+	{"jet_page_no_variables", "jet", "home", nil, nil, false, "error rendering jet template with no variables"},
+	// {"jet_page_with_variables", "jet", "home", map[string]interface{}{"var1": "value1"}, nil, false, "error rendering jet template with variables"},
+	{"invalid_page_template", "foo", "home", nil, nil, true, "no error rendering non-existent template engine"},
 }
 
 func TestRender_Page(t *testing.T) {
@@ -33,7 +39,7 @@ func TestRender_Page(t *testing.T) {
 		testRenderer.Renderer = e.renderer
 		testRenderer.RootPath = "./testdata"
 
-		err = testRenderer.Page(w, r, e.template, nil, nil)
+		err = testRenderer.Page(w, r, e.template, nil, e.data)
 		if e.errorExpected {
 			if err == nil {
 				t.Errorf("%s: %s", e.name, e.errorMessage)
