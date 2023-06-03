@@ -2,7 +2,9 @@ BINARY_NAME=fenixApp.exe
 
 ## build: builds all binaries
 build:
+	go mod tidy
 	go mod vendor
+	echo Building Fenix...
 	go build -o tmp/${BINARY_NAME} .
 	echo Fenix built!
 
