@@ -9,9 +9,11 @@ import (
 	"time"
 
 	"github.com/CloudyKit/jet/v6"
+	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/wtran29/fenix/render"
+	"github.com/wtran29/fenix/session"
 )
 
 const version = "1.0.0"
@@ -25,14 +27,16 @@ type Fenix struct {
 	RootPath string
 	Routes   *chi.Mux
 	Render   *render.Render
+	Session  *scs.SessionManager
 	JetViews *jet.Set
 	config   config
 }
 
 type config struct {
-	port     string
-	renderer string // template engine used
-
+	port        string
+	renderer    string // template engine used
+	cookie      cookieConfig
+	sessionType string
 }
 
 func (f *Fenix) New(rootPath string) error {
@@ -70,7 +74,25 @@ func (f *Fenix) New(rootPath string) error {
 	f.config = config{
 		port:     os.Getenv("PORT"),
 		renderer: os.Getenv("RENDERER"),
+		cookie: cookieConfig{
+			name:     os.Getenv("COOKIE_NAME"),
+			lifetime: os.Getenv("COOKIE_LIFETIME"),
+			persist:  os.Getenv("COOKIE_PERSISTS"),
+			secure:   os.Getenv("COOKIE_SECURE"),
+		},
+		sessionType: os.Getenv("SESSION_TYPE"),
 	}
+
+	// create session
+
+	sess := session.Session{
+		CookieLifetime: f.config.cookie.lifetime,
+		CookiePersist:  f.config.cookie.persist,
+		CookieName:     f.config.cookie.name,
+		SessionType:    f.config.sessionType,
+	}
+
+	f.Session = sess.InitSession()
 
 	var views = jet.NewSet(
 		jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
