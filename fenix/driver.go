@@ -4,8 +4,8 @@ import (
 	"database/sql"
 
 	_ "github.com/jackc/pgconn"
-	_ "github.com/jackc/pgx/v5"
-	_ "github.com/jackc/pgx/v5/stdlib"
+	_ "github.com/jackc/pgx/v4"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 func (f *Fenix) OpenDB(dbType, dsn string) (*sql.DB, error) {
