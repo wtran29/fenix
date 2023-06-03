@@ -79,6 +79,7 @@ func (f *Fenix) New(rootPath string) error {
 			lifetime: os.Getenv("COOKIE_LIFETIME"),
 			persist:  os.Getenv("COOKIE_PERSISTS"),
 			secure:   os.Getenv("COOKIE_SECURE"),
+			domain:   os.Getenv("COOKIE_DOMAIN"),
 		},
 		sessionType: os.Getenv("SESSION_TYPE"),
 	}
@@ -90,6 +91,7 @@ func (f *Fenix) New(rootPath string) error {
 		CookiePersist:  f.config.cookie.persist,
 		CookieName:     f.config.cookie.name,
 		SessionType:    f.config.sessionType,
+		CookieDomain:   f.config.cookie.domain,
 	}
 
 	f.Session = sess.InitSession()

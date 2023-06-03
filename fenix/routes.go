@@ -15,6 +15,7 @@ func (f *Fenix) routes() http.Handler {
 		mux.Use(middleware.Logger)
 	}
 	mux.Use(middleware.Recoverer)
+	mux.Use(f.SessionLoad)
 
 	return mux
 }
