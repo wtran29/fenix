@@ -152,6 +152,8 @@ func (f *Fenix) ListenAndServe() {
 		WriteTimeout: 600 * time.Second,
 	}
 
+	defer f.DB.Pool.Close()
+
 	f.InfoLog.Printf("Listening on port %s", os.Getenv("PORT"))
 	err := srv.ListenAndServe()
 	f.ErrorLog.Fatal(err)
