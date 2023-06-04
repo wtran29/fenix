@@ -2,10 +2,12 @@ package data
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
+
 	db2 "github.com/upper/db/v4"
 	"github.com/upper/db/v4/adapter/mysql"
 	"github.com/upper/db/v4/adapter/postgresql"
-	"os"
 )
 
 var db *sql.DB
@@ -28,4 +30,12 @@ func New(dbPool *sql.DB) Models {
 	}
 
 	return Models{}
+}
+
+func getInsertID(id db2.ID) int {
+	idType := fmt.Sprintf("%T", id)
+	if idType == "int64" {
+		return int(id.(int64))
+	}
+	return id.(int)
 }
