@@ -17,6 +17,10 @@
             <h1>Fenix</h1>
             <hr>
             <small class="text-muted">RESSURECT, REBUILD and create something IMMORTAL!</small>
+            <br>
+            {{if .IsAuthenticated}}
+                <small class="text-success">Authenticated! <a href="/users/logout">Logout</a>.</small>
+            {{end}}
         </div>
     </div>
     <hr>
@@ -26,6 +30,7 @@
         <a href="/go-page" class="list-group-item list-group-item-action">Render a Go Template</a>
         <a href="/jet-page" class="list-group-item list-group-item-action">Render a Jet Template</a>
         <a href="/sessions" class="list-group-item list-group-item-action">Use Sessions</a>
+        <a href="/users/login" class="list-group-item list-group-item-action">Login a user</a>
     </div>
 </div>
 

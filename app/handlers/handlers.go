@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"app/data"
 	"net/http"
 
 	"github.com/CloudyKit/jet/v6"
@@ -8,7 +9,8 @@ import (
 )
 
 type Handlers struct {
-	App *fenix.Fenix
+	App    *fenix.Fenix
+	Models data.Models
 }
 
 func (h *Handlers) Home(w http.ResponseWriter, r *http.Request) {

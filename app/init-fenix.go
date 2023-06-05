@@ -37,6 +37,7 @@ func initApplication() *application {
 	app.App.Routes = app.routes()
 
 	app.Models = data.New(app.App.DB.Pool)
+	handlers.Models = app.Models
 
 	return app
 }

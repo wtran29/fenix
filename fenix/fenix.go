@@ -183,6 +183,7 @@ func (f *Fenix) createRenderer() {
 		RootPath: f.RootPath,
 		Port:     f.config.port,
 		JetViews: f.JetViews,
+		Session:  f.Session,
 	}
 
 	f.Render = &renderer
