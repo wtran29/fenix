@@ -1,6 +1,7 @@
 package main
 
 import (
+	"app/data"
 	"app/handlers"
 	"log"
 	"os"
@@ -21,7 +22,7 @@ func initApplication() *application {
 		log.Fatal(err)
 	}
 
-	fnx.AppName = "testapp"
+	fnx.AppName = "myapp"
 
 	handlers := &handlers.Handlers{
 		App: fnx,
@@ -34,6 +35,8 @@ func initApplication() *application {
 
 	// overwriting the default routes from Fenix with routes from Fenix and our own routes
 	app.App.Routes = app.routes()
+
+	app.Models = data.New(app.App.DB.Pool)
 
 	return app
 }

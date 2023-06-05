@@ -109,17 +109,18 @@ func (u *User) Delete(id int) error {
 	return nil
 }
 
-func (u *User) Insert(user User) (int, error) {
-	newHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
+func (u *User) Insert(newUser User) (int, error) {
+	newHash, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 12)
 	if err != nil {
 		return 0, err
 	}
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
-	user.Password = string(newHash)
+
+	newUser.CreatedAt = time.Now()
+	newUser.UpdatedAt = time.Now()
+	newUser.Password = string(newHash)
 
 	collection := upper.Collection(u.Table())
-	res, err := collection.Insert(user)
+	res, err := collection.Insert(newUser)
 	if err != nil {
 		return 0, err
 	}

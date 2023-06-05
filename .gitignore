@@ -27,3 +27,6 @@ go.work
 
 # Go vendor
 vendor/
+
+# db-data contains actual database files
+*/db-data/

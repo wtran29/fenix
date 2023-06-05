@@ -16,7 +16,8 @@ var upper db2.Session
 type Models struct {
 	// any models inserted here (and in the New function)
 	// are easily accessible throughout the entire app
-
+	Users  User
+	Tokens Token
 }
 
 func New(dbPool *sql.DB) Models {
@@ -29,7 +30,10 @@ func New(dbPool *sql.DB) Models {
 		upper, _ = postgresql.New(dbPool)
 	}
 
-	return Models{}
+	return Models{
+		Users:  User{},
+		Tokens: Token{},
+	}
 }
 
 func getInsertID(id db2.ID) int {

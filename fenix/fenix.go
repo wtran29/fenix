@@ -68,7 +68,7 @@ func (f *Fenix) New(rootPath string) error {
 	infoLog, errorLog := f.startLoggers()
 
 	// connect to the database
-	if os.Getenv("DATABSE_TYPE") != "" {
+	if os.Getenv("DATABASE_TYPE") != "" {
 		db, err := f.OpenDB(os.Getenv("DATABASE_TYPE"), f.BuildDSN())
 		if err != nil {
 			errorLog.Println(err)
