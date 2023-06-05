@@ -24,7 +24,7 @@ func (u *User) Table() string {
 	return "users"
 }
 
-func (u *User) GetAll(c up.Cond) ([]*User, error) {
+func (u *User) GetAll() ([]*User, error) {
 	collection := upper.Collection(u.Table())
 
 	var all []*User
