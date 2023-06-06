@@ -19,6 +19,7 @@ func TestNew(t *testing.T) {
 	if fmt.Sprintf("%T", m) != "data.Models" {
 		t.Error("wrong type", fmt.Sprintf("%T", m))
 	}
+
 }
 
 func TestGetInsertID(t *testing.T) {
