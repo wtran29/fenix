@@ -24,7 +24,6 @@ func New(dbPool *sql.DB) Models {
 	db = dbPool
 
 	if os.Getenv("DATABASE_TYPE") == "mysql" || os.Getenv("DATABASE_TYPE") == "mariadb" {
-		// TODO
 		upper, _ = mysql.New(dbPool)
 	} else {
 		upper, _ = postgresql.New(dbPool)

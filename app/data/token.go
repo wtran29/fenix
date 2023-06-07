@@ -13,7 +13,7 @@ import (
 )
 
 type Token struct {
-	ID        int       `db:"id" json:"id"`
+	ID        int       `db:"id,omitempty" json:"id"`
 	UserID    int       `db:"user_id" json:"user_id"`
 	FirstName string    `db:"first_name" json:"first_name"`
 	Email     string    `db:"email" json:"email"`
@@ -84,6 +84,17 @@ func (t *Token) GetToken(plainText string) (*Token, error) {
 	return &token, nil
 }
 
+func (t *Token) Delete(id int) error {
+	collection := upper.Collection(t.Table())
+	res := collection.Find(id)
+	err := res.Delete()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (t *Token) DeleteToken(plainText string) error {
 	collection := upper.Collection(t.Table())
 	res := collection.Find(up.Cond{"token": plainText})
@@ -147,7 +158,8 @@ func (t *Token) AuthenticateToken(r *http.Request) (*User, error) {
 
 	token := headerParts[1]
 
-	if len(token) != 26 {
+	// the GenerateToken() hash uses base64 encoding with random bytes of 16
+	if len(token) != 22 {
 		return nil, errors.New("token wrong size")
 	}
 
