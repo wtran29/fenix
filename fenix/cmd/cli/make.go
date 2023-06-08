@@ -88,6 +88,9 @@ func doMake(arg2, arg3 string) error {
 		}
 
 		fileName := fnx.RootPath + "/data/" + strings.ToLower(modelName) + ".go"
+		if fileExists(fileName) {
+			exitGracefully(errors.New(fileName + " already exists!"))
+		}
 
 		model = strings.ReplaceAll(model, "$MODELNAME$", strcase.ToCamel(modelName))
 		model = strings.ReplaceAll(model, "$TABLENAME$", tableName)
