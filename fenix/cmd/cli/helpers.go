@@ -63,7 +63,9 @@ func showHelp() {
 	migrate down		- Reverse the most recent migration
 	migrate reset		- Revert all migrations and then run all up migrations 
 	make migrations <name>	- Create new up and down migrations files in the migrations folder
-	make auth			- Create and runs migrations for auth tables, and create models and middleware
+	make auth		- Create and runs migrations for auth tables, and create models and middleware
+	make handler <name>	- Create a stub handler in the handlers directory
+	make model <name>	- Create a new model in the models directory
 
 	`)
 }
