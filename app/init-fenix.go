@@ -3,6 +3,7 @@ package main
 import (
 	"app/data"
 	"app/handlers"
+	"app/middleware"
 	"log"
 	"os"
 
@@ -24,13 +25,18 @@ func initApplication() *application {
 
 	fnx.AppName = "myapp"
 
+	middleware := &middleware.Middleware{
+		App: fnx,
+	}
+
 	handlers := &handlers.Handlers{
 		App: fnx,
 	}
 
 	app := &application{
-		App:      fnx,
-		Handlers: handlers,
+		App:        fnx,
+		Handlers:   handlers,
+		Middleware: middleware,
 	}
 
 	// overwriting the default routes from Fenix with routes from Fenix and our own routes
@@ -38,6 +44,7 @@ func initApplication() *application {
 
 	app.Models = data.New(app.App.DB.Pool)
 	handlers.Models = app.Models
+	app.Middleware.Models = app.Models
 
 	return app
 }
