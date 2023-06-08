@@ -112,6 +112,7 @@ func (f *Fenix) New(rootPath string) error {
 		CookieName:     f.config.cookie.name,
 		SessionType:    f.config.sessionType,
 		CookieDomain:   f.config.cookie.domain,
+		DBPool:         f.DB.Pool,
 	}
 
 	f.Session = sess.InitSession()
