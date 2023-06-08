@@ -12,4 +12,4 @@ coverage:
 
 ## build_cli: builds the command line tool Fenix and copies it to the app
 build_cli:
-	@go build -o ../app/Fenix ./cmd/cli
+	@go build -o ../app/fenix.exe ./cmd/cli

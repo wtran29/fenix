@@ -20,7 +20,7 @@
 # Go workspace file
 go.work
 
-#temp files
+# temp files
 *tmp
 
 *.env
@@ -30,3 +30,6 @@ vendor/
 
 # db-data contains actual database files
 */db-data/
+
+# migrations
+*.sql

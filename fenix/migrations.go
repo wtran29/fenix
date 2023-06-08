@@ -2,6 +2,7 @@ package fenix
 
 import (
 	"log"
+	"path/filepath"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang-migrate/migrate/v4"
@@ -11,7 +12,8 @@ import (
 )
 
 func (f *Fenix) MigrateUp(dsn string) error {
-	m, err := migrate.New("file://"+f.RootPath+"/migrations", dsn)
+	rootPath := filepath.ToSlash(f.RootPath)
+	m, err := migrate.New("file://"+rootPath+"/migrations", dsn)
 	if err != nil {
 		return err
 	}
@@ -24,8 +26,9 @@ func (f *Fenix) MigrateUp(dsn string) error {
 	return nil
 }
 
-func (f *Fenix) MigrationDownAll(dsn string) error {
-	m, err := migrate.New("file://"+f.RootPath+"/migrations", dsn)
+func (f *Fenix) MigrateDownAll(dsn string) error {
+	rootPath := filepath.ToSlash(f.RootPath)
+	m, err := migrate.New("file://"+rootPath+"/migrations", dsn)
 	if err != nil {
 		return err
 	}
@@ -39,7 +42,8 @@ func (f *Fenix) MigrationDownAll(dsn string) error {
 }
 
 func (f *Fenix) Steps(n int, dsn string) error {
-	m, err := migrate.New("file://"+f.RootPath+"/migrations", dsn)
+	rootPath := filepath.ToSlash(f.RootPath)
+	m, err := migrate.New("file://"+rootPath+"/migrations", dsn)
 	if err != nil {
 		return err
 	}
@@ -52,7 +56,8 @@ func (f *Fenix) Steps(n int, dsn string) error {
 }
 
 func (f *Fenix) MigrateForce(dsn string) error {
-	m, err := migrate.New("file://"+f.RootPath+"/migrations", dsn)
+	rootPath := filepath.ToSlash(f.RootPath)
+	m, err := migrate.New("file://"+rootPath+"/migrations", dsn)
 	if err != nil {
 		return err
 	}
