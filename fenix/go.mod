@@ -11,11 +11,11 @@ require (
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/golang-migrate/migrate/v4 v4.16.1
+	github.com/gomodule/redigo v1.8.9
 	github.com/joho/godotenv v1.5.1
 )
 
 require (
-	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
