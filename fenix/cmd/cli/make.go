@@ -3,16 +3,25 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
+
 	"strings"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/gertd/go-pluralize"
 	"github.com/iancoleman/strcase"
 )
 
 func doMake(arg2, arg3 string) error {
 	switch arg2 {
+	case "key":
+		rnd, err := fnx.RandomString(32)
+		if err != nil {
+			exitGracefully(err, "error generating key")
+		}
+		color.Yellow("32 character encryption key: %s", rnd)
+
 	case "migration":
 		dbType := fnx.DB.DataType
 		if arg3 == "" {
@@ -58,7 +67,7 @@ func doMake(arg2, arg3 string) error {
 		handler := string(data)
 		handler = strings.ReplaceAll(handler, "$HANDLERNAME$", strcase.ToCamel(arg3))
 
-		err = ioutil.WriteFile(fileName, []byte(handler), 0644)
+		err = os.WriteFile(fileName, []byte(handler), 0644)
 		if err != nil {
 			exitGracefully(err)
 		}
