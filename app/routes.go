@@ -13,14 +13,17 @@ func (a *application) routes() *chi.Mux {
 	// middleware must come before any routes
 
 	// add routes here
-	a.App.Routes.Get("/", a.Handlers.Home)
-	a.App.Routes.Get("/go-page", a.Handlers.GoPage)
-	a.App.Routes.Get("/jet-page", a.Handlers.JetPage)
-	a.App.Routes.Get("/sessions", a.Handlers.SessionTest)
+	a.get("/", a.Handlers.Home)
+	a.get("/go-page", a.Handlers.GoPage)
+	a.get("/jet-page", a.Handlers.JetPage)
+	a.get("/sessions", a.Handlers.SessionTest)
 
-	a.App.Routes.Get("/users/login", a.Handlers.UserLogin)
-	a.App.Routes.Post("/users/login", a.Handlers.PostUserLogin)
-	a.App.Routes.Get("/users/logout", a.Handlers.Logout)
+	a.get("/users/login", a.Handlers.UserLogin)
+	a.post("/users/login", a.Handlers.PostUserLogin)
+	a.get("/users/logout", a.Handlers.Logout)
+
+	a.App.Routes.Get("/form", a.Handlers.Form)
+	a.App.Routes.Post("/form", a.Handlers.PostForm)
 
 	a.App.Routes.Get("/create-user", func(w http.ResponseWriter, r *http.Request) {
 		u := data.User{
@@ -86,6 +89,17 @@ func (a *application) routes() *chi.Mux {
 			a.App.ErrorLog.Println(err)
 			return
 		}
+
+		validator := a.App.Validator(nil)
+		u.LastName = ""
+
+		u.Validate(validator)
+
+		if !validator.Valid() {
+			fmt.Fprint(w, "failed validation")
+			return
+		}
+
 		err = u.Update(*u)
 		if err != nil {
 			a.App.ErrorLog.Println(err)
