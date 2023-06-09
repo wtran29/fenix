@@ -87,5 +87,5 @@ func (h *Handlers) XML(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) DownloadFile(w http.ResponseWriter, r *http.Request) {
-	h.App.DownloadFile(w, r, "./public/images", "fenix.jpg")
+	h.App.DownloadFile(w, r, "./public/images", "fenix.png")
 }
