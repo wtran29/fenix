@@ -11,7 +11,9 @@ import (
 	"github.com/CloudyKit/jet/v6"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
+	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
+	"github.com/wtran29/fenix/cache"
 	"github.com/wtran29/fenix/render"
 	"github.com/wtran29/fenix/session"
 )
@@ -32,6 +34,7 @@ type Fenix struct {
 	JetViews      *jet.Set
 	config        config
 	EncryptionKey string
+	Cache         cache.Cache
 }
 
 type config struct {
@@ -40,6 +43,7 @@ type config struct {
 	cookie      cookieConfig
 	sessionType string
 	database    databaseConfig
+	redis       redisConfig
 }
 
 func (f *Fenix) New(rootPath string) error {
@@ -81,6 +85,11 @@ func (f *Fenix) New(rootPath string) error {
 		}
 	}
 
+	if os.Getenv("CACHE") == "redis" {
+		redis := f.createClientRedisCache()
+		f.Cache = redis
+	}
+
 	f.InfoLog = infoLog
 	f.ErrorLog = errorLog
 	f.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
@@ -102,6 +111,11 @@ func (f *Fenix) New(rootPath string) error {
 		database: databaseConfig{
 			database: os.Getenv("DATABASE_TYPE"),
 			dsn:      f.BuildDSN(),
+		},
+		redis: redisConfig{
+			host:     os.Getenv("REDIS_HOST"),
+			password: os.Getenv("REDIS_PASSWORD"),
+			prefix:   os.Getenv("REDIS_PREFIX"),
 		},
 	}
 
@@ -192,6 +206,7 @@ func (f *Fenix) createRenderer() {
 	f.Render = &renderer
 }
 
+// BuildDSN builds the datasource name of the database, then returns as a string
 func (f *Fenix) BuildDSN() string {
 	var dsn string
 
@@ -212,4 +227,28 @@ func (f *Fenix) BuildDSN() string {
 
 	}
 	return dsn
+}
+
+func (f *Fenix) createRedisPool() *redis.Pool {
+	return &redis.Pool{
+		MaxIdle:     50,
+		MaxActive:   10000,
+		IdleTimeout: 240 * time.Second,
+		Dial: func() (redis.Conn, error) {
+			return redis.Dial("tcp", f.config.redis.host, redis.DialPassword(f.config.redis.password))
+		},
+
+		TestOnBorrow: func(c redis.Conn, t time.Time) error {
+			_, err := c.Do("PING")
+			return err
+		},
+	}
+}
+
+func (f *Fenix) createClientRedisCache() *cache.RedisCache {
+	client := cache.RedisCache{
+		Conn:   f.createRedisPool(),
+		Prefix: f.config.redis.prefix,
+	}
+	return &client
 }
