@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"app/data"
+	"fmt"
 	"net/http"
 
 	"github.com/CloudyKit/jet/v6"
@@ -34,6 +35,7 @@ func (h *Handlers) JetPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// SessionTest is a handler that demos session data
 func (h *Handlers) SessionTest(w http.ResponseWriter, r *http.Request) {
 	myData := "bar"
 
@@ -51,6 +53,7 @@ func (h *Handlers) SessionTest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// JSON is a handler to demo writing JSON
 func (h *Handlers) JSON(w http.ResponseWriter, r *http.Request) {
 	var payload struct {
 		ID      int64    `json:"id"`
@@ -68,6 +71,7 @@ func (h *Handlers) JSON(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// XML is a handler to demo writing XML
 func (h *Handlers) XML(w http.ResponseWriter, r *http.Request) {
 	type Payload struct {
 		ID      int64    `xml:"id"`
@@ -86,6 +90,27 @@ func (h *Handlers) XML(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// DownloadFile is a handler that demos downloading a file
 func (h *Handlers) DownloadFile(w http.ResponseWriter, r *http.Request) {
 	h.App.DownloadFile(w, r, "./public/images", "fenix.png")
+}
+
+func (h *Handlers) TestCrypto(w http.ResponseWriter, r *http.Request) {
+	plaintext := "hello world"
+	fmt.Fprint(w, "Unencrypted: "+plaintext+"\n")
+	encrypted, err := h.encrypt(plaintext)
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+		h.App.ErrorInternalServerError(w, r)
+		return
+	}
+
+	fmt.Fprint(w, "Encrypted: "+encrypted+"\n")
+	decrypted, err := h.decrypt(encrypted)
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+		h.App.ErrorInternalServerError(w, r)
+		return
+	}
+	fmt.Fprint(w, "Decrypted: "+decrypted+"\n")
 }

@@ -4,6 +4,8 @@ package handlers
 import (
 	"context"
 	"net/http"
+
+	"github.com/wtran29/fenix"
 )
 
 func (h *Handlers) render(w http.ResponseWriter, r *http.Request, tmpl string, variables, data interface{}) error {
@@ -36,4 +38,26 @@ func (h *Handlers) sessionDestroy(ctx context.Context) error {
 
 func (h *Handlers) randomString(n int) (string, error) {
 	return h.App.RandomString(n)
+}
+
+func (h *Handlers) encrypt(text string) (string, error) {
+	enc := fenix.Encryption{
+		Key: []byte(h.App.EncryptionKey),
+	}
+	encrypted, err := enc.Encrypt(text)
+	if err != nil {
+		return "", err
+	}
+	return encrypted, nil
+}
+
+func (h *Handlers) decrypt(encText string) (string, error) {
+	enc := fenix.Encryption{
+		Key: []byte(h.App.EncryptionKey),
+	}
+	decrypted, err := enc.Decrypt(encText)
+	if err != nil {
+		return "", err
+	}
+	return decrypted, nil
 }
