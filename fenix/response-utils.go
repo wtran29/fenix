@@ -57,7 +57,8 @@ func (f *Fenix) WriteXML(w http.ResponseWriter, status int, data interface{}, he
 func (f *Fenix) DownloadFile(w http.ResponseWriter, r *http.Request, pathToFile, fileName string) error {
 	fp := path.Join(pathToFile, fileName)
 	fileToServe := filepath.Clean(fp)
-	w.Header().Set("Content-Type", fmt.Sprintf("attachment; file=\"%s\"", fileName))
+	// w.Header().Set("Content-Type", fmt.Sprintf("attachment; file=\"%s\"", fileName))
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; file=\"%s\"", fileName))
 	http.ServeFile(w, r, fileToServe)
 	return nil
 }
