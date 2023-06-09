@@ -97,7 +97,7 @@ func (f *RedisCache) Set(str string, val interface{}, expiry ...int) error {
 			return err
 		}
 	} else {
-		_, err := conn.Do("SETEX", key, string(encoded))
+		_, err := conn.Do("SET", key, string(encoded))
 		if err != nil {
 			return err
 		}
@@ -128,7 +128,7 @@ func (f *RedisCache) EmptyByMatch(str string) error {
 	}
 
 	for _, v := range keys {
-		err := f.Remove(v)
+		_, err := conn.Do("DEL", v)
 		if err != nil {
 			return err
 		}
@@ -147,7 +147,7 @@ func (f *RedisCache) Empty() error {
 	}
 
 	for _, v := range keys {
-		err = f.Remove(v)
+		_, err := conn.Do("DEL", v)
 		if err != nil {
 			return err
 		}
