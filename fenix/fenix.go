@@ -20,6 +20,8 @@ import (
 
 const version = "1.0.0"
 
+var redisCache *cache.RedisCache
+
 type Fenix struct {
 	AppName       string
 	Debug         bool
@@ -85,9 +87,9 @@ func (f *Fenix) New(rootPath string) error {
 		}
 	}
 
-	if os.Getenv("CACHE") == "redis" {
-		redis := f.createClientRedisCache()
-		f.Cache = redis
+	if os.Getenv("CACHE") == "redis" || os.Getenv("SESSION_TYPE") == "redis" {
+		redisCache := f.createClientRedisCache()
+		f.Cache = redisCache
 	}
 
 	f.InfoLog = infoLog
@@ -127,7 +129,13 @@ func (f *Fenix) New(rootPath string) error {
 		CookieName:     f.config.cookie.name,
 		SessionType:    f.config.sessionType,
 		CookieDomain:   f.config.cookie.domain,
-		DBPool:         f.DB.Pool,
+	}
+
+	switch f.config.sessionType {
+	case "redis":
+		sess.RedisPool = redisCache.Conn
+	case "mysql", "postgres", "postgresql", "mariadb":
+		sess.DBPool = f.DB.Pool
 	}
 
 	f.Session = sess.InitSession()
