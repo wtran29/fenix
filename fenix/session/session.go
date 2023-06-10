@@ -10,6 +10,7 @@ import (
 	"github.com/alexedwards/scs/mysqlstore"
 	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
+	"github.com/gomodule/redigo/redis"
 )
 
 type Session struct {
@@ -20,6 +21,7 @@ type Session struct {
 	SessionType    string
 	CookieSecure   string
 	DBPool         *sql.DB
+	RedisPool      *redis.Pool
 }
 
 func (f *Session) InitSession() *scs.SessionManager {
