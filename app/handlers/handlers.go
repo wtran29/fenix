@@ -101,7 +101,7 @@ func (h *Handlers) TestCrypto(w http.ResponseWriter, r *http.Request) {
 	encrypted, err := h.encrypt(plaintext)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
-		h.App.ErrorInternalServerError(w, r)
+		h.App.ErrorIntServerErr(w, r)
 		return
 	}
 
@@ -109,7 +109,7 @@ func (h *Handlers) TestCrypto(w http.ResponseWriter, r *http.Request) {
 	decrypted, err := h.decrypt(encrypted)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
-		h.App.ErrorInternalServerError(w, r)
+		h.App.ErrorIntServerErr(w, r)
 		return
 	}
 	fmt.Fprint(w, "Decrypted: "+decrypted+"\n")

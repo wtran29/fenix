@@ -3,11 +3,31 @@ package fenix
 import (
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"path"
 	"path/filepath"
 )
+
+func (f *Fenix) ReadJSON(w http.ResponseWriter, r *http.Request, data interface{}) error {
+	maxBytes := 1048576 // one mb
+	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
+
+	dec := json.NewDecoder(r.Body)
+	err := dec.Decode(data)
+	if err != nil {
+		return err
+	}
+
+	err = dec.Decode(&struct{}{})
+	if err != io.EOF {
+		return errors.New("body must only have a single json value")
+	}
+
+	return nil
+}
 
 // Write JSON file
 func (f *Fenix) WriteJSON(w http.ResponseWriter, status int, data interface{}, headers ...http.Header) error {
@@ -76,7 +96,7 @@ func (f *Fenix) ErrorNotFound(w http.ResponseWriter, r *http.Request) {
 
 // Status 500 -  Internal Server Error: The server encountered an unexpected condition
 // that prevented it from fulfilling the request.
-func (f *Fenix) ErrorInternalServerError(w http.ResponseWriter, r *http.Request) {
+func (f *Fenix) ErrorIntServerErr(w http.ResponseWriter, r *http.Request) {
 	f.ErrorStatus(w, http.StatusInternalServerError)
 }
 
