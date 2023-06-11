@@ -141,12 +141,21 @@ func (f *Fenix) New(rootPath string) error {
 	f.Session = sess.InitSession()
 	f.EncryptionKey = os.Getenv("KEY")
 
-	var views = jet.NewSet(
-		jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
-		jet.InDevelopmentMode(),
-	)
+	if f.Debug {
+		var views = jet.NewSet(
+			jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
+			// dev mode gives the ability to make changes in real time for jet templates
+			jet.InDevelopmentMode(),
+		)
 
-	f.JetViews = views
+		f.JetViews = views
+	} else {
+		var views = jet.NewSet(
+			jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
+		)
+
+		f.JetViews = views
+	}
 
 	f.createRenderer()
 
