@@ -10,6 +10,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/jackc/pgconn v1.14.0
 	github.com/jackc/pgx/v4 v4.18.1
+	github.com/justinas/nosurf v1.1.1
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/upper/db/v4 v4.6.0
 	github.com/wtran29/fenix v0.0.0-00010101000000-000000000000
