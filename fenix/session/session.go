@@ -9,6 +9,7 @@ import (
 
 	"github.com/alexedwards/scs/mysqlstore"
 	"github.com/alexedwards/scs/postgresstore"
+	"github.com/alexedwards/scs/redisstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/gomodule/redigo/redis"
 )
@@ -55,6 +56,7 @@ func (f *Session) InitSession() *scs.SessionManager {
 	// which session store?
 	switch strings.ToLower(f.SessionType) {
 	case "redis":
+		session.Store = redisstore.New(f.RedisPool)
 	case "mysql", "mariadb":
 		session.Store = mysqlstore.New(f.DBPool)
 	case "postgres", "postgresql":
@@ -62,5 +64,7 @@ func (f *Session) InitSession() *scs.SessionManager {
 	default:
 		// cookie
 	}
+
 	return session
+
 }

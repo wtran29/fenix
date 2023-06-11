@@ -39,6 +39,7 @@ require (
 	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/alexedwards/scs/mysqlstore v0.0.0-20230327161757-10d4299e3b24
 	github.com/alexedwards/scs/postgresstore v0.0.0-20230327161757-10d4299e3b24
+	github.com/alexedwards/scs/redisstore v0.0.0-20230327161757-10d4299e3b24
 	github.com/alicebob/miniredis/v2 v2.30.3
 	github.com/iancoleman/strcase v0.2.0
 	github.com/jackc/pgconn v1.14.0

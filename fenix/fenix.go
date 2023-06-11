@@ -88,7 +88,7 @@ func (f *Fenix) New(rootPath string) error {
 	}
 
 	if os.Getenv("CACHE") == "redis" || os.Getenv("SESSION_TYPE") == "redis" {
-		redisCache := f.createClientRedisCache()
+		redisCache = f.createClientRedisCache()
 		f.Cache = redisCache
 	}
 
