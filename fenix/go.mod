@@ -15,6 +15,7 @@ require (
 	github.com/gomodule/redigo v1.8.9
 	github.com/joho/godotenv v1.5.1
 	github.com/justinas/nosurf v1.1.1
+	github.com/robfig/cron/v3 v3.0.1
 )
 
 require (
