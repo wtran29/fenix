@@ -114,6 +114,7 @@ func (bc *BadgerCache) emptyKeysHelper(str string) error {
 
 			if keysCollected == collectSize {
 				if err := batch.Flush(); err != nil {
+					iter.Close()
 					return err
 				}
 				keysCollected = 0
@@ -121,6 +122,7 @@ func (bc *BadgerCache) emptyKeysHelper(str string) error {
 				defer batch.Cancel()
 			}
 		}
+		iter.Close()
 		return nil
 	})
 
