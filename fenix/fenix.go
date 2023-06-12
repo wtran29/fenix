@@ -25,6 +25,9 @@ const version = "1.0.0"
 var redisCache *cache.RedisCache
 var badgerCache *cache.BadgerCache
 
+var redisPool *redis.Pool
+var badgerConn *badger.DB
+
 type Fenix struct {
 	AppName       string
 	Debug         bool
@@ -91,14 +94,19 @@ func (f *Fenix) New(rootPath string) error {
 		}
 	}
 
+	scheduler := cron.New()
+	f.Scheduler = scheduler
+
 	if os.Getenv("CACHE") == "redis" || os.Getenv("SESSION_TYPE") == "redis" {
 		redisCache = f.createClientRedisCache()
 		f.Cache = redisCache
+		redisPool = redisCache.Conn
 	}
 
 	if os.Getenv("CACHE") == "badger" {
 		badgerCache = f.createClientBadgerCache()
 		f.Cache = badgerCache
+		badgerConn = badgerCache.Conn
 
 		_, err = f.Scheduler.AddFunc("@daily", func() {
 			_ = badgerCache.Conn.RunValueLogGC(0.7)
@@ -202,7 +210,18 @@ func (f *Fenix) ListenAndServe() {
 		WriteTimeout: 600 * time.Second,
 	}
 
-	defer f.DB.Pool.Close()
+	if f.DB.Pool != nil {
+		defer f.DB.Pool.Close()
+	}
+
+	if redisPool != nil {
+		defer redisPool.Close()
+
+	}
+
+	if badgerConn != nil {
+		defer badgerConn.Close()
+	}
 
 	f.InfoLog.Printf("Listening on port %s", os.Getenv("PORT"))
 	err := srv.ListenAndServe()
