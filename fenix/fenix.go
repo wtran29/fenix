@@ -10,6 +10,7 @@ import (
 
 	"github.com/CloudyKit/jet/v6"
 	"github.com/alexedwards/scs/v2"
+	"github.com/dgraph-io/badger/v3"
 	"github.com/go-chi/chi/v5"
 	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
@@ -21,6 +22,7 @@ import (
 const version = "1.0.0"
 
 var redisCache *cache.RedisCache
+var badgerCache *cache.BadgerCache
 
 type Fenix struct {
 	AppName       string
@@ -90,6 +92,11 @@ func (f *Fenix) New(rootPath string) error {
 	if os.Getenv("CACHE") == "redis" || os.Getenv("SESSION_TYPE") == "redis" {
 		redisCache = f.createClientRedisCache()
 		f.Cache = redisCache
+	}
+
+	if os.Getenv("CACHE") == "badger" {
+		badgerCache := f.createClientBadgerCache()
+		f.Cache = badgerCache
 	}
 
 	f.InfoLog = infoLog
@@ -268,4 +275,22 @@ func (f *Fenix) createClientRedisCache() *cache.RedisCache {
 		Prefix: f.config.redis.prefix,
 	}
 	return &client
+}
+
+func (f *Fenix) createClientBadgerCache() *cache.BadgerCache {
+	client := cache.BadgerCache{
+		Conn: f.createBadgerConn(),
+	}
+
+	return &client
+}
+
+func (f *Fenix) createBadgerConn() *badger.DB {
+	db, err := badger.Open(badger.DefaultOptions(f.RootPath + "/tmp/badger"))
+	if err != nil {
+		log.Printf("failed to create BadgerDB connection: %v", err)
+		return nil
+	}
+	return db
+
 }
