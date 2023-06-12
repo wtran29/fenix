@@ -14,6 +14,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
+	"github.com/robfig/cron/v3"
 	"github.com/wtran29/fenix/cache"
 	"github.com/wtran29/fenix/render"
 	"github.com/wtran29/fenix/session"
@@ -39,6 +40,7 @@ type Fenix struct {
 	config        config
 	EncryptionKey string
 	Cache         cache.Cache
+	Scheduler     *cron.Cron
 }
 
 type config struct {
@@ -95,8 +97,15 @@ func (f *Fenix) New(rootPath string) error {
 	}
 
 	if os.Getenv("CACHE") == "badger" {
-		badgerCache := f.createClientBadgerCache()
+		badgerCache = f.createClientBadgerCache()
 		f.Cache = badgerCache
+
+		_, err = f.Scheduler.AddFunc("@daily", func() {
+			_ = badgerCache.Conn.RunValueLogGC(0.7)
+		})
+		if err != nil {
+			return err
+		}
 	}
 
 	f.InfoLog = infoLog
