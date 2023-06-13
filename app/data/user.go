@@ -172,3 +172,12 @@ func (u *User) IsPasswordMatch(pw string) (bool, error) {
 	}
 	return true, nil
 }
+
+func (u *User) CheckRememberToken(id int, token string) bool {
+	var rToken RememberToken
+	t := RememberToken{}
+	collection := upper.Collection(t.Table())
+	res := collection.Find(up.Cond{"user_id": id, "remember_token": token})
+	err := res.One(&rToken)
+	return err == nil
+}
