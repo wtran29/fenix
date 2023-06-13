@@ -61,7 +61,7 @@ func (m *Mail) ListenForMail() {
 func (m *Mail) Send(msg Message) error {
 	// Determines if using API or SMTP
 	if len(m.API) > 0 && len(m.APIKey) > 0 && len(m.APIUrl) > 0 && m.API != "smtp" {
-		m.SelectAPI(msg)
+		return m.SelectAPI(msg)
 	}
 	return m.SendSMTPMessage(msg)
 }
