@@ -120,10 +120,10 @@ func (f *Fenix) New(rootPath string) error {
 
 	f.InfoLog = infoLog
 	f.ErrorLog = errorLog
-	f.Mail = f.createMailer()
 	f.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
 	f.Version = version
 	f.RootPath = rootPath
+	f.Mail = f.createMailer()
 	f.Routes = f.routes().(*chi.Mux)
 
 	f.config = config{
