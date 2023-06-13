@@ -33,8 +33,8 @@ type TemplateData struct {
 	Port            string
 	ServerName      string
 	Secure          bool
-	Error           string
-	Flash           string
+	Error           string // for handling errors on jet views
+	Flash           string // for handling flash messages on jet views
 }
 
 func (f *Render) defaultData(td *TemplateData, r *http.Request) *TemplateData {
