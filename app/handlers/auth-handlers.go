@@ -209,8 +209,11 @@ func (h *Handlers) ResetPasswordForm(w http.ResponseWriter, r *http.Request) {
 	// validate expiry of 1 hour reset
 	expired := signer.Expired(testUrl, 60)
 	if expired {
-		h.App.ErrorLog.Print("link expired")
-		h.App.ErrorUnauthorized(w, r)
+		h.App.ErrorLog.Print("user clicked on expired link")
+		// w.Write([]byte("This link has expired. Please resubmit the reset password form."))
+		// h.App.ErrorUnauthorized(w, r)
+		h.App.Session.Put(r.Context(), "error", "This link has expired. Please resubmit the form below.")
+		http.Redirect(w, r, "/users/forgot-password", http.StatusSeeOther)
 		return
 	}
 	// display form with encrypted email
