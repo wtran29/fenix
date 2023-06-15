@@ -35,3 +35,4 @@ vendor/
 *.sql
 
 app.zip
+*/dist/test
