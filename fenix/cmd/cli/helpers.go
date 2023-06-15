@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/joho/godotenv"
@@ -70,7 +72,50 @@ func showHelp() {
 	make handler <name>	- Create a stub handler in the handlers directory
 	make model <name>	- Create a new model in the data directory
 	make session		- Create a table in the database as session store
-	make mail		- Create two starter email templates in the mail directory
+	make mail <name>	- Create two starter email templates in the mail directory
 
 	`)
+}
+
+func updateSourceFiles(path string, fi os.FileInfo, err error) error {
+	// check for an error before doing anything else
+	if err != nil {
+		return err
+	}
+
+	// check if current file is directory
+	if fi.IsDir() {
+		return nil
+	}
+
+	// check go files
+	match, err := filepath.Match("*.go", fi.Name())
+	if err != nil {
+		return err
+	}
+
+	if match {
+		// read contents
+		read, err := os.ReadFile(path)
+		if err != nil {
+			exitGracefully(err)
+		}
+
+		newContents := strings.Replace(string(read), "app", appURL, -1)
+
+		// write changed file
+		err = os.WriteFile(path, []byte(newContents), 0)
+		if err != nil {
+			exitGracefully(err)
+		}
+	}
+	return nil
+}
+
+func updateSource() {
+	// walk entire project folder, including subfolders
+	err := filepath.Walk(".", updateSourceFiles)
+	if err != nil {
+		exitGracefully(err)
+	}
 }
