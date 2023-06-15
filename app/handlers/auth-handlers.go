@@ -45,7 +45,11 @@ func (h *Handlers) PostUserLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !pwMatch {
-		w.Write([]byte("Invalid password!"))
+		// w.Write([]byte("Invalid password!"))
+		h.App.InfoLog.Println("Invalid password by user")
+
+		h.App.Session.Put(r.Context(), "error", "Invalid credentials. Please try again.")
+		http.Redirect(w, r, "/users/login", http.StatusSeeOther)
 		return
 	}
 
@@ -182,6 +186,7 @@ func (h *Handlers) PostForgot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// redirect the user
+	h.App.Session.Put(r.Context(), "flash", "Reset password sent. Please check your email.")
 	http.Redirect(w, r, "/users/login", http.StatusSeeOther)
 }
 
@@ -219,4 +224,35 @@ func (h *Handlers) ResetPasswordForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	return
+}
+
+func (h *Handlers) PostResetPassword(w http.ResponseWriter, r *http.Request) {
+	// parse form
+	err := r.ParseForm()
+	if err != nil {
+		h.App.ErrorIntServerErr(w, r)
+		return
+	}
+	// decrypt the email
+	email, err := h.decrypt(r.Form.Get("email"))
+	if err != nil {
+		h.App.ErrorIntServerErr(w, r)
+		return
+	}
+	// get the user
+	var u data.User
+	user, err := u.GetByEmail(email)
+	if err != nil {
+		h.App.ErrorIntServerErr(w, r)
+		return
+	}
+	// reset the password
+	err = user.ResetPassword(user.ID, r.Form.Get("password"))
+	if err != nil {
+		h.App.ErrorIntServerErr(w, r)
+		return
+	}
+	// redirect
+	h.App.Session.Put(r.Context(), "flash", "Password has been reset. You can now log in.")
+	http.Redirect(w, r, "/users/login", http.StatusSeeOther)
 }
