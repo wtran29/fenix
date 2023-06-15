@@ -13,6 +13,16 @@ Login
 
 
 <hr>
+{{if .Error != ""}}
+<div class="alert alert-danger text-center">
+    {{.Error}}
+</div>
+{{end}}
+{{if .Flash != ""}}
+<div class="alert alert-info text-center">
+    {{.Flash}}
+</div>
+{{end}}
 
 <form method="post" action="/users/login"
     name="login-form" id="login-form"
