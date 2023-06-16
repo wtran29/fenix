@@ -101,7 +101,7 @@ func updateSourceFiles(path string, fi os.FileInfo, err error) error {
 			exitGracefully(err)
 		}
 
-		newContents := strings.Replace(string(read), "app", appURL, -1)
+		newContents := strings.Replace(string(read), "myapp", appURL, -1)
 
 		// write changed file
 		err = os.WriteFile(path, []byte(newContents), 0)
