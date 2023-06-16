@@ -13,8 +13,12 @@ require (
 	github.com/justinas/nosurf v1.1.1
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/upper/db/v4 v4.6.0
-	github.com/wtran29/fenix v0.0.0-00010101000000-000000000000
 	golang.org/x/crypto v0.9.0
+)
+
+require (
+	github.com/wtran29/fenix v0.0.0-00010101000000-000000000000
+	github.com/wtran29/fenix/fenix v0.0.0-20230616015206-548f54533b4e
 )
 
 require (
@@ -58,7 +62,7 @@ require (
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
-	github.com/imdario/mergo v0.3.12 // indirect
+	github.com/imdario/mergo v0.3.15 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

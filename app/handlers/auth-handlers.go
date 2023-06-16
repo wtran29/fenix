@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/CloudyKit/jet/v6"
-	"github.com/wtran29/fenix/mailer"
+	"github.com/wtran29/fenix/fenix/mailer"
 
-	"github.com/wtran29/fenix/urlsigner"
+	"github.com/wtran29/fenix/fenix/urlsigner"
 )
 
 func (h *Handlers) UserLogin(w http.ResponseWriter, r *http.Request) {

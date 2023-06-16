@@ -5,7 +5,7 @@ import (
 	"app/handlers"
 	"app/middleware"
 
-	"github.com/wtran29/fenix"
+	"github.com/wtran29/fenix/fenix"
 )
 
 type application struct {

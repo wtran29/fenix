@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/CloudyKit/jet/v6"
-	"github.com/wtran29/fenix"
+	"github.com/wtran29/fenix/fenix"
 )
 
 type Handlers struct {

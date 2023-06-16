@@ -3,7 +3,7 @@ package middleware
 import (
 	"app/data"
 
-	"github.com/wtran29/fenix"
+	"github.com/wtran29/fenix/fenix"
 )
 
 type Middleware struct {

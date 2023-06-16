@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/wtran29/fenix/mailer"
+	"github.com/wtran29/fenix/fenix/mailer"
 
 	"github.com/go-chi/chi/v5"
 )

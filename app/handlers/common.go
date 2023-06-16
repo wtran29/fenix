@@ -5,7 +5,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/wtran29/fenix"
+	"github.com/wtran29/fenix/fenix"
 )
 
 func (h *Handlers) render(w http.ResponseWriter, r *http.Request, tmpl string, variables, data interface{}) error {

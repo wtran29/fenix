@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/wtran29/fenix"
+	"github.com/wtran29/fenix/fenix"
 )
 
 func initApplication() *application {
