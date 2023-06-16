@@ -32,7 +32,7 @@ vendor/
 */db-data/
 
 # migrations
-*.sql
+# *.sql
 
 app.zip
 */dist/*
