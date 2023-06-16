@@ -1,4 +1,4 @@
-module github.com/wtran29/fenix/fenix
+module github.com/wtran29/fenix
 
 go 1.20
 
@@ -21,6 +21,7 @@ require (
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/vanng822/go-premailer v1.20.2
+	github.com/wtran29/fenix/fenix v0.0.0-20230616072211-25f50aec1703
 	github.com/xhit/go-simple-mail/v2 v2.13.0
 )
 
