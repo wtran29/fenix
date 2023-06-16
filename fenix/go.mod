@@ -1,4 +1,4 @@
-module github.com/wtran29/fenix
+module github.com/wtran29/fenix/fenix
 
 go 1.20
 

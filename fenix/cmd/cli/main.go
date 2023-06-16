@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/fatih/color"
-	"github.com/wtran29/fenix"
+	"github.com/wtran29/fenix/fenix"
 )
 
 const version = "1.0.0"

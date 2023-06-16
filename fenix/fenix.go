@@ -16,10 +16,10 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
 	"github.com/robfig/cron/v3"
-	"github.com/wtran29/fenix/cache"
-	"github.com/wtran29/fenix/mailer"
-	"github.com/wtran29/fenix/render"
-	"github.com/wtran29/fenix/session"
+	"github.com/wtran29/fenix/fenix/cache"
+	"github.com/wtran29/fenix/fenix/mailer"
+	"github.com/wtran29/fenix/fenix/render"
+	"github.com/wtran29/fenix/fenix/session"
 )
 
 const version = "1.0.0"

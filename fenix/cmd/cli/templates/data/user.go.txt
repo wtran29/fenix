@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/wtran29/fenix"
+	"github.com/wtran29/fenix/fenix"
 
 	up "github.com/upper/db/v4"
 	"golang.org/x/crypto/bcrypt"
