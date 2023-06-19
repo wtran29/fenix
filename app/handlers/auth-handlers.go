@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"app/data"
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"log"
+	"myapp/data"
 	"net/http"
 	"time"
 

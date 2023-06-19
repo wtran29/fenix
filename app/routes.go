@@ -1,8 +1,8 @@
 package main
 
 import (
-	"app/data"
 	"fmt"
+	"myapp/data"
 	"net/http"
 	"strconv"
 

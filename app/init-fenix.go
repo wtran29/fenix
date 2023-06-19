@@ -1,10 +1,10 @@
 package main
 
 import (
-	"app/data"
-	"app/handlers"
-	"app/middleware"
 	"log"
+	"myapp/data"
+	"myapp/handlers"
+	"myapp/middleware"
 	"os"
 
 	"github.com/wtran29/fenix/fenix"

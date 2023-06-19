@@ -1,9 +1,9 @@
 package main
 
 import (
-	"app/data"
-	"app/handlers"
-	"app/middleware"
+	"myapp/data"
+	"myapp/handlers"
+	"myapp/middleware"
 
 	"github.com/wtran29/fenix/fenix"
 )

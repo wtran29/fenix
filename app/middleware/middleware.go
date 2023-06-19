@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"app/data"
+	"myapp/data"
 
 	"github.com/wtran29/fenix/fenix"
 )

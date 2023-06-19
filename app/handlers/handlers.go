@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"app/data"
 	"fmt"
+	"myapp/data"
 	"net/http"
 	"time"
 
