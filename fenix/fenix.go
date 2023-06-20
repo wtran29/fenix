@@ -16,6 +16,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
 	"github.com/robfig/cron/v3"
+	"github.com/wtran29/fenix/cmd/filesystems/miniofilesystem"
 	"github.com/wtran29/fenix/fenix/cache"
 	"github.com/wtran29/fenix/fenix/mailer"
 	"github.com/wtran29/fenix/fenix/render"
@@ -48,6 +49,7 @@ type Fenix struct {
 	Scheduler     *cron.Cron
 	Mail          mailer.Mail
 	Server        Server
+	FileSystems   map[string]interface{}
 }
 
 type Server struct {
@@ -206,6 +208,7 @@ func (f *Fenix) New(rootPath string) error {
 	}
 
 	f.createRenderer()
+	f.FileSystems = f.createFileSystems()
 	go f.Mail.ListenForMail()
 
 	return nil
@@ -367,4 +370,26 @@ func (f *Fenix) createBadgerConn() *badger.DB {
 	}
 	return db
 
+}
+
+func (f *Fenix) createFileSystems() map[string]interface{} {
+	fileSystems := make(map[string]interface{})
+
+	if os.Getenv("MINIO_SECRET") != "" {
+		useSSL := false
+		if strings.ToLower(os.Getenv("MINIO_USESSL")) == "true" {
+			useSSL = true
+		}
+
+		minio := miniofilesystem.Minio{
+			Endpoint: os.Getenv("MINIO_ENDPOINT"),
+			Key:      os.Getenv("MINIO_KEY"),
+			Secret:   os.Getenv("MINIO_SECRET"),
+			UseSSL:   useSSL,
+			Region:   os.Getenv("MINIO_REGION"),
+			Bucket:   os.Getenv("MINIO_BUCKET"),
+		}
+		fileSystems["MINIO"] = minio
+	}
+	return fileSystems
 }

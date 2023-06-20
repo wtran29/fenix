@@ -20,3 +20,12 @@ func (f *Fenix) routes() http.Handler {
 
 	return mux
 }
+
+// Routes are fenix specific routes that are mounted in the routes file
+func Routes() http.Handler {
+	r := chi.NewRouter()
+	r.Get("/test-fenix", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("it works!"))
+	})
+	return r
+}

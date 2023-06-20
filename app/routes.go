@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"myapp/data"
 	"net/http"
 	"strconv"
 
+	"github.com/wtran29/fenix"
+	"github.com/wtran29/fenix/cmd/filesystems/miniofilesystem"
 	"github.com/wtran29/fenix/fenix/mailer"
 	"github.com/wtran29/fenix/testFolder"
 
@@ -46,6 +49,19 @@ func (a *application) routes() *chi.Mux {
 	a.post("/api/empty-cache", a.Handlers.EmptyCache)
 
 	a.get("/test-route", testFolder.TestHandler)
+	a.get("/test-minio", func(w http.ResponseWriter, r *http.Request) {
+		fs := a.App.FileSystems["MINIO"].(miniofilesystem.Minio)
+
+		files, err := fs.List("")
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		for _, file := range files {
+			log.Println(file.Key)
+		}
+	})
 
 	a.get("/test-mail", func(w http.ResponseWriter, r *http.Request) {
 		msg := mailer.Message{
@@ -176,6 +192,9 @@ func (a *application) routes() *chi.Mux {
 	// static routes
 	fileServer := http.FileServer(http.Dir("./public"))
 	a.App.Routes.Handle("/public/*", http.StripPrefix("/public", fileServer))
+
+	// routes from fenix
+	a.App.Routes.Mount("/fenix", fenix.Routes())
 
 	return a.App.Routes
 }
