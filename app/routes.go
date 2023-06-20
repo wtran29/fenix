@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/wtran29/fenix/fenix/mailer"
+	"github.com/wtran29/fenix/testFolder"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -43,6 +44,8 @@ func (a *application) routes() *chi.Mux {
 	a.post("/api/get-from-cache", a.Handlers.GetFromCache)
 	a.post("/api/delete-from-cache", a.Handlers.DeleteFromCache)
 	a.post("/api/empty-cache", a.Handlers.EmptyCache)
+
+	a.get("/test-route", testFolder.TestHandler)
 
 	a.get("/test-mail", func(w http.ResponseWriter, r *http.Request) {
 		msg := mailer.Message{

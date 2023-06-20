@@ -16,7 +16,10 @@ require (
 	golang.org/x/crypto v0.9.0
 )
 
-require github.com/wtran29/fenix/fenix v0.0.0-20230616072211-25f50aec1703
+require (
+	github.com/wtran29/fenix v0.0.0-00010101000000-000000000000
+	github.com/wtran29/fenix/fenix v0.0.0-20230616072211-25f50aec1703
+)
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
