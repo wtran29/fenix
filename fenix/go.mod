@@ -1,4 +1,4 @@
-module github.com/wtran29/fenix
+module github.com/wtran29/fenix/fenix
 
 go 1.20
 
@@ -21,7 +21,6 @@ require (
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/vanng822/go-premailer v1.20.2
-	github.com/wtran29/fenix/fenix v0.0.0-20230616072211-25f50aec1703
 	github.com/xhit/go-simple-mail/v2 v2.13.0
 )
 
@@ -74,6 +73,7 @@ require (
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
+	github.com/kr/fs v0.1.0 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/mailgun/mailgun-go/v4 v4.4.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -89,6 +89,7 @@ require (
 	github.com/opencontainers/runc v1.1.5 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pkg/sftp v1.13.5 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/sendgrid/rest v2.6.3+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.8.0+incompatible // indirect
