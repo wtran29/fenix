@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/wtran29/fenix"
-	"github.com/wtran29/fenix/cmd/filesystems/miniofilesystem"
+	"github.com/wtran29/fenix/fenix"
+	"github.com/wtran29/fenix/fenix/cmd/filesystems/miniofilesystem"
 	"github.com/wtran29/fenix/fenix/mailer"
-	"github.com/wtran29/fenix/testFolder"
+	"github.com/wtran29/fenix/fenix/testFolder"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -48,15 +48,27 @@ func (a *application) routes() *chi.Mux {
 	a.post("/api/delete-from-cache", a.Handlers.DeleteFromCache)
 	a.post("/api/empty-cache", a.Handlers.EmptyCache)
 
+	a.get("/list-fs", a.Handlers.ListFS)
+	a.get("/files/upload", a.Handlers.UploadToFS)
+	a.post("/files/upload", a.Handlers.PostUploadToFS)
+	a.get("/delete-from-fs", a.Handlers.DeleteFromFS)
+
 	a.get("/test-route", testFolder.TestHandler)
 	a.get("/test-minio", func(w http.ResponseWriter, r *http.Request) {
-		fs := a.App.FileSystems["MINIO"].(miniofilesystem.Minio)
+		log.Println("route to test-minio")
+		fs, ok := a.App.FileSystems["MINIO"].(miniofilesystem.Minio)
+		if !ok {
+			log.Println("File system 'MINIO' not found or has an unexpected type")
+			return
+		}
+		log.Println(fs)
 
 		files, err := fs.List("")
 		if err != nil {
 			log.Println(err)
 			return
 		}
+		log.Println(files)
 
 		for _, file := range files {
 			log.Println(file.Key)
