@@ -16,8 +16,9 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
 	"github.com/robfig/cron/v3"
-	"github.com/wtran29/fenix/cmd/filesystems/miniofilesystem"
 	"github.com/wtran29/fenix/fenix/cache"
+	"github.com/wtran29/fenix/fenix/cmd/filesystems/miniofilesystem"
+	"github.com/wtran29/fenix/fenix/cmd/filesystems/sftpfilesystem"
 	"github.com/wtran29/fenix/fenix/mailer"
 	"github.com/wtran29/fenix/fenix/render"
 	"github.com/wtran29/fenix/fenix/session"
@@ -391,5 +392,17 @@ func (f *Fenix) createFileSystems() map[string]interface{} {
 		}
 		fileSystems["MINIO"] = minio
 	}
+
+	if os.Getenv("SFTP_HOST") != "" {
+		sftp := sftpfilesystem.SFTP{
+			Host: os.Getenv("SFTP_HOST"),
+			User: os.Getenv("SFTP_USER"),
+			Pass: os.Getenv("SFTP_PASS"),
+			Port: os.Getenv("SFTP_PORT"),
+		}
+		fileSystems["SFTP"] = sftp
+	}
+
 	return fileSystems
+
 }
