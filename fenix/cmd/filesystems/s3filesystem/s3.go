@@ -1,6 +1,6 @@
 package s3filesystem
 
-import "github.com/wtran29/fenix/cmd/filesystems"
+import "github.com/wtran29/fenix/fenix/cmd/filesystems"
 
 type S3 struct {
 	Key      string

@@ -1,6 +1,6 @@
 package webdavfilesystem
 
-import "github.com/wtran29/fenix/cmd/filesystems"
+import "github.com/wtran29/fenix/fenix/cmd/filesystems"
 
 type WebDAV struct {
 	Host string
