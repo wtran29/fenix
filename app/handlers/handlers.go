@@ -199,6 +199,13 @@ func (h *Handlers) PostUploadToFS(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+	case "SFTP":
+		fs := h.App.FileSystems["SFTP"].(sftpfilesystem.SFTP)
+		err = fs.Put(filename, "")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	h.App.Session.Put(r.Context(), "flash", "File uploaded!")
@@ -235,14 +242,16 @@ func getFileToUpload(r *http.Request, fieldname string) (string, error) {
 
 func (h *Handlers) DeleteFromFS(w http.ResponseWriter, r *http.Request) {
 	var fs filesystems.FS
-	fsType := r.URL.Query().Get("fs-type")
+	fsType := r.URL.Query().Get("fs_type")
 	item := r.URL.Query().Get("file")
 
 	switch fsType {
 	case "MINIO":
 		f := h.App.FileSystems["MINIO"].(miniofilesystem.Minio)
 		fs = &f
-
+	case "SFTP":
+		f := h.App.FileSystems["SFTP"].(sftpfilesystem.SFTP)
+		fs = &f
 	}
 
 	deleted := fs.Delete([]string{item})
