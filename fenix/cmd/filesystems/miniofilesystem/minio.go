@@ -9,7 +9,7 @@ import (
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/wtran29/fenix/cmd/filesystems"
+	"github.com/wtran29/fenix/fenix/cmd/filesystems"
 )
 
 type Minio struct {
@@ -22,6 +22,8 @@ type Minio struct {
 }
 
 func (m *Minio) getCredentials() *minio.Client {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	client, err := minio.New(m.Endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(m.Key, m.Secret, ""),
 		Secure: m.UseSSL,
@@ -30,6 +32,11 @@ func (m *Minio) getCredentials() *minio.Client {
 		log.Println(err)
 
 	}
+	loc, err := client.GetBucketLocation(ctx, "testbucket")
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println("Bucket region:", loc)
 	return client
 }
 
@@ -60,7 +67,7 @@ func (m *Minio) Put(filename, folder string) error {
 		log.Println("Failed with FPutObject")
 		log.Println(err)
 		log.Println("UploadInfo:", uploadInfo)
-		return nil
+		return err
 	}
 	return nil
 }
