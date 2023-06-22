@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	"io"
-	"log"
 	"myapp/data"
 	"net/http"
 	"net/url"
@@ -186,7 +185,7 @@ func (h *Handlers) UploadToFS(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) PostUploadToFS(w http.ResponseWriter, r *http.Request) {
 	filename, err := getFileToUpload(r, "formFile")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to upload file: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -196,14 +195,14 @@ func (h *Handlers) PostUploadToFS(w http.ResponseWriter, r *http.Request) {
 		fs := h.App.FileSystems["MINIO"].(miniofilesystem.Minio)
 		err = fs.Put(filename, "")
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Failed to upload file to MINIO: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 	case "SFTP":
 		fs := h.App.FileSystems["SFTP"].(sftpfilesystem.SFTP)
 		err = fs.Put(filename, "")
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Failed to upload file to SFTP: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 	}
@@ -236,7 +235,6 @@ func getFileToUpload(r *http.Request, fieldname string) (string, error) {
 		return "", err
 	}
 
-	log.Printf("./tmp/%s", header.Filename)
 	return fmt.Sprintf("./tmp/%s", header.Filename), nil
 }
 

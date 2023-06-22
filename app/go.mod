@@ -17,7 +17,7 @@ require (
 
 )
 
-require github.com/wtran29/fenix/fenix v0.0.0-20230620182148-e211981b03f4
+require github.com/wtran29/fenix/fenix v0.0.0
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
