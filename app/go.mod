@@ -2,7 +2,7 @@ module myapp
 
 go 1.20
 
-replace github.com/wtran29/fenix => ../fenix
+replace github.com/wtran29/fenix/fenix => ../fenix
 
 require (
 	github.com/CloudyKit/jet/v6 v6.2.0
@@ -14,12 +14,10 @@ require (
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/upper/db/v4 v4.6.0
 	golang.org/x/crypto v0.9.0
+
 )
 
-require (
-	github.com/wtran29/fenix v0.0.0
-	github.com/wtran29/fenix/fenix v0.0.0-20230616072211-25f50aec1703
-)
+require github.com/wtran29/fenix/fenix v0.0.0-20230620182148-e211981b03f4
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
@@ -74,6 +72,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
+	github.com/kr/fs v0.1.0 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/mailgun/mailgun-go/v4 v4.4.1 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
@@ -87,6 +86,7 @@ require (
 	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/opencontainers/runc v1.1.5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pkg/sftp v1.13.5 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/segmentio/fasthash v1.0.3 // indirect
