@@ -85,17 +85,17 @@ func (s *SFTP) List(prefix string) ([]filesystems.Listing, error) {
 		return listing, err
 	}
 
-	for _, x := range files {
+	for _, file := range files {
 		var item filesystems.Listing
 
-		if !strings.HasPrefix(x.Name(), ".") {
-			b := float64(x.Size())
+		if !strings.HasPrefix(file.Name(), ".") {
+			b := float64(file.Size())
 			kb := b / 1024
 			mb := kb / 1024
-			item.Key = x.Name()
+			item.Key = file.Name()
 			item.Size = mb
-			item.LastModified = x.ModTime()
-			item.IsDir = x.IsDir()
+			item.LastModified = file.ModTime()
+			item.IsDir = file.IsDir()
 			listing = append(listing, item)
 		}
 
