@@ -18,7 +18,9 @@ import (
 	"github.com/robfig/cron/v3"
 	"github.com/wtran29/fenix/fenix/cache"
 	"github.com/wtran29/fenix/fenix/cmd/filesystems/miniofilesystem"
+	"github.com/wtran29/fenix/fenix/cmd/filesystems/s3filesystem"
 	"github.com/wtran29/fenix/fenix/cmd/filesystems/sftpfilesystem"
+	"github.com/wtran29/fenix/fenix/cmd/filesystems/webdavfilesystem"
 	"github.com/wtran29/fenix/fenix/mailer"
 	"github.com/wtran29/fenix/fenix/render"
 	"github.com/wtran29/fenix/fenix/session"
@@ -51,6 +53,10 @@ type Fenix struct {
 	Mail          mailer.Mail
 	Server        Server
 	FileSystems   map[string]interface{}
+	S3            s3filesystem.S3
+	SFTP          sftpfilesystem.SFTP
+	WebDAV        webdavfilesystem.WebDAV
+	Minio         miniofilesystem.Minio
 }
 
 type Server struct {
@@ -67,6 +73,7 @@ type config struct {
 	sessionType string
 	database    databaseConfig
 	redis       redisConfig
+	uploads     uploadConfig
 }
 
 func (f *Fenix) New(rootPath string) error {
@@ -138,6 +145,19 @@ func (f *Fenix) New(rootPath string) error {
 	f.Mail = f.createMailer()
 	f.Routes = f.routes().(*chi.Mux)
 
+	// file uploads
+	uploadTypes := strings.Split(os.Getenv("ALLOWED_FILETYPES"), ",")
+	var mimeTypes []string
+	mimeTypes = append(mimeTypes, uploadTypes...)
+
+	// max upload size
+	var maxUploadSize int64
+	if max, err := strconv.Atoi(os.Getenv("MAX_UPLOAD_SIZE")); err != nil {
+		maxUploadSize = 10 << 20
+	} else {
+		maxUploadSize = int64(max)
+	}
+
 	f.config = config{
 		port:     os.Getenv("PORT"),
 		renderer: os.Getenv("RENDERER"),
@@ -157,6 +177,10 @@ func (f *Fenix) New(rootPath string) error {
 			host:     os.Getenv("REDIS_HOST"),
 			password: os.Getenv("REDIS_PASSWORD"),
 			prefix:   os.Getenv("REDIS_PREFIX"),
+		},
+		uploads: uploadConfig{
+			maxUploadSize:    maxUploadSize,
+			allowedMimeTypes: mimeTypes,
 		},
 	}
 
@@ -376,6 +400,19 @@ func (f *Fenix) createBadgerConn() *badger.DB {
 func (f *Fenix) createFileSystems() map[string]interface{} {
 	fileSystems := make(map[string]interface{})
 
+	if os.Getenv("S3_KEY") != "" {
+		s3 := s3filesystem.S3{
+			Key:      os.Getenv("S3_KEY"),
+			Secret:   os.Getenv("S3_SECRET"),
+			Region:   os.Getenv("S3_REGION"),
+			Endpoint: os.Getenv("S3_ENDPOINT"),
+			Bucket:   os.Getenv("S3_BUCKET"),
+		}
+		fileSystems["S3"] = s3
+		f.S3 = s3
+
+	}
+
 	if os.Getenv("MINIO_SECRET") != "" {
 		useSSL := false
 		if strings.ToLower(os.Getenv("MINIO_USESSL")) == "true" {
@@ -391,6 +428,7 @@ func (f *Fenix) createFileSystems() map[string]interface{} {
 			Bucket:   os.Getenv("MINIO_BUCKET"),
 		}
 		fileSystems["MINIO"] = minio
+		f.Minio = minio
 	}
 
 	if os.Getenv("SFTP_HOST") != "" {
@@ -401,6 +439,17 @@ func (f *Fenix) createFileSystems() map[string]interface{} {
 			Port: os.Getenv("SFTP_PORT"),
 		}
 		fileSystems["SFTP"] = sftp
+		f.SFTP = sftp
+	}
+
+	if os.Getenv("WEBDAV_HOST") != "" {
+		webdav := webdavfilesystem.WebDAV{
+			Host: os.Getenv("WEBDAV_HOST"),
+			User: os.Getenv("WEBDAV_USER"),
+			Pass: os.Getenv("WEBDAV_PASS"),
+		}
+		fileSystems["WEBDAV"] = webdav
+		f.WebDAV = webdav
 	}
 
 	return fileSystems
