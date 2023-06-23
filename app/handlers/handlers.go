@@ -13,7 +13,9 @@ import (
 	"github.com/wtran29/fenix/fenix"
 	"github.com/wtran29/fenix/fenix/cmd/filesystems"
 	"github.com/wtran29/fenix/fenix/cmd/filesystems/miniofilesystem"
+	"github.com/wtran29/fenix/fenix/cmd/filesystems/s3filesystem"
 	"github.com/wtran29/fenix/fenix/cmd/filesystems/sftpfilesystem"
+	"github.com/wtran29/fenix/fenix/cmd/filesystems/webdavfilesystem"
 )
 
 type Handlers struct {
@@ -136,6 +138,10 @@ func (h *Handlers) ListFS(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Get("curPath") != "" {
 		curPath = r.URL.Query().Get("curPath")
 		curPath, _ = url.QueryUnescape(curPath)
+
+		if curPath == "/" {
+			curPath = ""
+		}
 	}
 
 	if fsType != "" {
@@ -149,6 +155,15 @@ func (h *Handlers) ListFS(w http.ResponseWriter, r *http.Request) {
 			f := h.App.FileSystems["SFTP"].(sftpfilesystem.SFTP)
 			fs = &f
 			fsType = "SFTP"
+
+		case "WEBDAV":
+			f := h.App.FileSystems["WEBDAV"].(webdavfilesystem.WebDAV)
+			fs = &f
+			fsType = "WEBDAV"
+		case "S3":
+			f := h.App.FileSystems["S3"].(s3filesystem.S3)
+			fs = &f
+			fsType = "S3"
 		}
 
 		l, err := fs.List(curPath)
@@ -205,6 +220,20 @@ func (h *Handlers) PostUploadToFS(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Failed to upload file to SFTP: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
+	case "WEBDAV":
+		fs := h.App.FileSystems["WEBDAV"].(webdavfilesystem.WebDAV)
+		err = fs.Put(filename, "")
+		if err != nil {
+			http.Error(w, "Failed to upload file to WEBDAV: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+	case "S3":
+		fs := h.App.FileSystems["S3"].(s3filesystem.S3)
+		err = fs.Put(filename, "")
+		if err != nil {
+			http.Error(w, "Failed to upload file to S3: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	h.App.Session.Put(r.Context(), "flash", "File uploaded!")
@@ -212,10 +241,10 @@ func (h *Handlers) PostUploadToFS(w http.ResponseWriter, r *http.Request) {
 }
 
 func getFileToUpload(r *http.Request, fieldname string) (string, error) {
-	_ = r.ParseMultipartForm(10 << 20)
-	// if err != nil {
-	// 	fmt.Println("could not parse multipart form:", err)
-	// }
+	err := r.ParseMultipartForm(10 << 20)
+	if err != nil {
+		fmt.Println("could not parse multipart form:", err)
+	}
 	file, header, err := r.FormFile(fieldname)
 	if err != nil {
 		return "", err
@@ -250,6 +279,13 @@ func (h *Handlers) DeleteFromFS(w http.ResponseWriter, r *http.Request) {
 	case "SFTP":
 		f := h.App.FileSystems["SFTP"].(sftpfilesystem.SFTP)
 		fs = &f
+	case "WEBDAV":
+		f := h.App.FileSystems["WEBDAV"].(webdavfilesystem.WebDAV)
+		fs = &f
+
+	case "S3":
+		f := h.App.FileSystems["S3"].(s3filesystem.S3)
+		fs = &f
 	}
 
 	deleted := fs.Delete([]string{item})
@@ -257,4 +293,22 @@ func (h *Handlers) DeleteFromFS(w http.ResponseWriter, r *http.Request) {
 		h.App.Session.Put(r.Context(), "flash", fmt.Sprintf("%s was deleted", item))
 		http.Redirect(w, r, "/list-fs?fs-type="+fsType, http.StatusSeeOther)
 	}
+}
+
+func (h *Handlers) FenixUpload(w http.ResponseWriter, r *http.Request) {
+	err := h.render(w, r, "fenix-upload", nil, nil)
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) PostFenixUpload(w http.ResponseWriter, r *http.Request) {
+	err := h.App.UploadFile(r, "", "formFile", &h.App.S3)
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+		h.App.Session.Put(r.Context(), "error", err.Error())
+	} else {
+		h.App.Session.Put(r.Context(), "flash", "uploaded!")
+	}
+	http.Redirect(w, r, "/upload", http.StatusSeeOther)
 }
