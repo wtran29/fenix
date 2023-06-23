@@ -48,6 +48,11 @@ func (a *application) routes() *chi.Mux {
 	a.post("/api/delete-from-cache", a.Handlers.DeleteFromCache)
 	a.post("/api/empty-cache", a.Handlers.EmptyCache)
 
+	// upload to S3
+	a.get("/upload", a.Handlers.FenixUpload)
+	a.post("/upload", a.Handlers.PostFenixUpload)
+
+	// upload to preferred fs - local disk or S3 bucket
 	a.get("/list-fs", a.Handlers.ListFS)
 	a.get("/files/upload", a.Handlers.UploadToFS)
 	a.post("/files/upload", a.Handlers.PostUploadToFS)
