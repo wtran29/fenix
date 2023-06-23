@@ -3,3 +3,4 @@ github.com/jackc/chunkreader v1.0.0 h1:4s39bBR8ByfqH+DKm8rQA3E1LHZWB9XWcrz8fqaZb
 github.com/jackc/pgproto3 v1.1.0 h1:FYYE4yRw+AgI8wXIinMlNjBbp/UitDJwfj5LqqewP1A=
 github.com/wtran29/fenix v1.0.0 h1:xE5DxFZazVB1urVHJvLo+JgC+l665rwrXHXlAZGjVlE=
 github.com/wtran29/fenix v1.0.0/go.mod h1:Qy1McQj5+IFoA8jNxK6guj7VJT2SN8A7PzMS2Z/bnFo=
+golang.org/x/term v0.8.0/go.mod h1:xPskH00ivmX89bAKVGSKKtLOWNx2+17Eiy94tnKShWo=
