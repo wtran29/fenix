@@ -13,7 +13,7 @@ import (
 )
 
 // popConnect connects to the buffalo/pop library to leverage multiple db migrations
-func (f *Fenix) popConnect() (*pop.Connection, error) {
+func (f *Fenix) PopConnect() (*pop.Connection, error) {
 	tx, err := pop.Connect("development")
 	if err != nil {
 		return nil, err
@@ -85,8 +85,8 @@ func (f *Fenix) PopMigrateReset(tx *pop.Connection) error {
 }
 
 func (f *Fenix) MigrateUp(dsn string) error {
-	rootPath := filepath.ToSlash(f.RootPath)
-	m, err := migrate.New("file://"+rootPath+"/migrations", dsn)
+	// rootPath := filepath.ToSlash(f.RootPath)
+	m, err := migrate.New("file://"+f.RootPath+"/migrations", dsn)
 	if err != nil {
 		return err
 	}
