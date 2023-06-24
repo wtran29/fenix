@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -59,20 +60,33 @@ func getDSN() string {
 
 }
 
+func checkForDB() {
+	dbType := fnx.DB.DataType
+
+	if dbType == "" {
+		exitGracefully(errors.New("no database connection provided"))
+	}
+
+	if !fileExists(fnx.RootPath + "/config/database.yml") {
+		exitGracefully(errors.New("/config/database.yml does not exist"))
+	}
+}
+
 func showHelp() {
 	color.Yellow(`Available commands:
 
-	help			- Show available commands
-	version			- Print the application version
-	migrate			- Runs all pending up migrations
-	migrate down		- Reverse the most recent migration
-	migrate reset		- Revert all migrations and then run all up migrations 
-	make migrations <name>	- Create new up and down migrations files in the migrations folder
-	make auth		- Create and runs migrations for auth tables, and create models and middleware
-	make handler <name>	- Create a stub handler in the handlers directory
-	make model <name>	- Create a new model in the data directory
-	make session		- Create a table in the database as session store
-	make mail <name>	- Create two starter email templates in the mail directory
+	help					- Show available commands
+	version					- Print the application version
+	migrate					- Runs all pending up migrations
+	migrate down				- Reverse the most recent migration
+	migrate reset				- Revert all migrations and then run all up migrations 
+	make migration <name> <format>		- Create new up and down migrations files in the migrations folder; 
+						format=sql/fizz (default fizz)
+	make auth				- Create and runs migrations for auth tables, and create models and middleware
+	make handler <name>			- Create a stub handler in the handlers directory
+	make model <name>			- Create a new model in the data directory
+	make session				- Create a table in the database as session store
+	make mail <name>			- Create two starter email templates in the mail directory
 
 	`)
 }
