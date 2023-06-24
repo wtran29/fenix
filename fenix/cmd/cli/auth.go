@@ -1,31 +1,46 @@
 package main
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/fatih/color"
 )
 
 func doAuth() error {
+
+	checkForDB()
 	// migrations
 	dbType := fnx.DB.DataType
-	fileName := fmt.Sprintf("%d_create_auth_tables", time.Now().UnixMicro())
-	upFile := fnx.RootPath + "/migrations/" + fileName + ".up.sql"
-	downFile := fnx.RootPath + "/migrations/" + fileName + ".down.sql"
 
-	err := copyFileFromTemplate("templates/migrations/auth_tables."+dbType+".sql", upFile)
+	tx, err := fnx.PopConnect()
 	if err != nil {
 		exitGracefully(err)
 	}
 
-	err = copyDataToFile([]byte("drop table if exists users cascade; drop table if exists tokens cascade; drop table if exists remember_tokens"), downFile)
+	defer tx.Close()
+
+	// fileName := fmt.Sprintf("%d_create_auth_tables", time.Now().UnixMicro())
+	// upFile := fnx.RootPath + "/migrations/" + fileName + ".up.sql"
+	// downFile := fnx.RootPath + "/migrations/" + fileName + ".down.sql"
+
+	// err := copyFileFromTemplate("templates/migrations/auth_tables."+dbType+".sql", upFile)
+	upBytes, err := templateFS.ReadFile("templates/migrations/auth_tables." + dbType + ".sql")
+	if err != nil {
+		exitGracefully(err)
+	}
+
+	// err = copyDataToFile([]byte("drop table if exists users cascade; drop table if exists tokens cascade; drop table if exists remember_tokens"), downFile)
+	downBytes := []byte("drop table if exists users cascade; drop table if exists tokens cascade; drop table if exists remember_tokens")
+	if err != nil {
+		exitGracefully(err)
+	}
+
+	err = fnx.CreatePopMigration(upBytes, downBytes, "auth", "sql")
 	if err != nil {
 		exitGracefully(err)
 	}
 
 	// run migrations
-	err = doMigrate("up", "")
+	// err = doMigrate("up", "")
+	err = fnx.RunPopMigrations(tx)
 	if err != nil {
 		exitGracefully(err)
 	}
