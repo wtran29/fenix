@@ -33,7 +33,7 @@ test:
 start: run
     
 stop:
-	echo "Starting the front end..."
+	echo "Stopping Fenix..."
 	taskkill /IM ${BINARY_NAME} /F
 	echo Stopped Fenix
 
