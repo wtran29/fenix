@@ -33,6 +33,9 @@ func (a *application) routes() *chi.Mux {
 	a.get("/users/reset-password", a.Handlers.ResetPasswordForm)
 	a.post("/users/reset-password", a.Handlers.PostResetPassword)
 
+	a.get("/auth/{provider}", a.Handlers.SocialLogin)
+	a.get("/auth/{provider}/callback", a.Handlers.SocialMediaCallback)
+
 	a.App.Routes.Get("/form", a.Handlers.Form)
 	a.App.Routes.Post("/form", a.Handlers.PostForm)
 
@@ -212,6 +215,7 @@ func (a *application) routes() *chi.Mux {
 
 	// routes from fenix
 	a.App.Routes.Mount("/fenix", fenix.Routes())
+	a.App.Routes.Mount("/api", a.ApiRoutes())
 
 	return a.App.Routes
 }
