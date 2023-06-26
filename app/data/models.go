@@ -16,8 +16,9 @@ var upper db2.Session
 type Models struct {
 	// any models inserted here (and in the New function)
 	// are easily accessible throughout the entire app
-	Users  User
-	Tokens Token
+	Users         User
+	Tokens        Token
+	RememberToken RememberToken
 }
 
 func New(dbPool *sql.DB) Models {
@@ -33,8 +34,9 @@ func New(dbPool *sql.DB) Models {
 	}
 
 	return Models{
-		Users:  User{},
-		Tokens: Token{},
+		Users:         User{},
+		Tokens:        Token{},
+		RememberToken: RememberToken{},
 	}
 }
 
