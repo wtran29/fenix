@@ -23,43 +23,67 @@ Login
     {{.Flash}}
 </div>
 {{end}}
+<div class="row">
+    <div class="col text-left">
+        <label class="form-label">Login with other providers</label>
+        <br>
+        <a href="/auth/github?provider=github" class="btn btn-outline-secondary" style="color: black;"
+            onmouseover="this.style.backgroundColor='black'; this.style.color='white'; this.querySelector('.bi').style.color='white'; "
+            onmouseout="this.removeAttribute('style'); this.style.color='black'; this.querySelector('.bi').style.color='black';"
+        >
+            <i class="bi bi-github" style="color: black;"></i>
+            Login with GitHub
+        </a>
 
-<form method="post" action="/users/login"
-    name="login-form" id="login-form"
-    class="d-block needs-validation"
-    autocomplete="off" novalidate="">
+        <br>
 
-    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" name="email"
-            required="" autocomplete="email-new">
+        <a href="/auth/google?provider=google" class="btn btn-outline-secondary mt-3" style="color: black"
+            onmouseover="this.style.backgroundColor='#4285F4'; this.style.color='white'; this.style.borderColor='#4285F4'; this.querySelector('.bi').style.color='white';"
+            onmouseout="this.removeAttribute('style'); this.style.color='black'; this.querySelector('.bi').style.color='#4285F4'"
+        >
+            <i class="bi bi-google" style="color: #4285F4;"></i>
+            Login with Google
+        </a>
     </div>
+    <div class="col">
+        <form method="post" action="/users/login"
+            name="login-form" id="login-form"
+            class="d-block needs-validation"
+            autocomplete="off" novalidate="">
 
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password"
-            required="" autocomplete="password-new">
+            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email"
+                    required="" autocomplete="email-new">
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password"
+                    required="" autocomplete="password-new">
+            </div>
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" value="remember" name="remember" id="remember"/>
+                <label class="form-check-label" for="remember">Remember me</label>
+            </div>
+
+            <hr>
+
+            <div class="d-flex align-items-center">
+                <a href="javascript:void(0)" class="btn btn-primary me-auto" onclick="val()">Login</a>
+                <a class="btn btn-outline-secondary ms-auto" href="/">Back...</a>
+            </div>
+            <P class="mt-2">
+                <small><a href="/users/forgot-password">Forgot password?</a></small>
+            </p>
+
+        </form>
+
     </div>
-
-    <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" value="remember" name="remember" id="remember"/>
-        <label class="form-check-label" for="remember">Remember me</label>
-    </div>
-
-    <hr>
-
-    <a href="javascript:void(0)" class="btn btn-primary" onclick="val()">Login</a>
-    <P class="mt-2">
-        <small><a href="/users/forgot-password">Forgot password?</a></small>
-    </p>
-
-</form>
-
-<div class="text-center">
-    <a class="btn btn-outline-secondary" href="/">Back...</a>
-<div>
+</div>
 
 <p>&nbsp;</p>
 
