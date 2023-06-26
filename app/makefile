@@ -2,22 +2,22 @@ BINARY_NAME=fenixApp.exe
 
 ## build: builds all binaries
 build:
-	go mod tidy
-	go mod vendor
-	echo Building Fenix...
-	go build -o tmp/${BINARY_NAME} .
-	echo Fenix built!
+	@go mod tidy
+	@go mod vendor
+	@echo Building Fenix...
+	@go build -o tmp/${BINARY_NAME} .
+	@echo Fenix built!
 
 run: build
-	echo Starting Fenix...
-	./tmp/${BINARY_NAME} &
-	echo Fenix started!
+	@echo Starting Fenix...
+	@./tmp/${BINARY_NAME} &
+	@echo Fenix started!
 
 clean:
-	echo Cleaning...
-	go clean
-	del ./tmp/${BINARY_NAME}
-	echo Cleaned!
+	@echo Cleaning...
+	@go clean
+	@rm ./tmp/${BINARY_NAME}
+	@echo Cleaned!
 
 dev-up:
 	docker-compose up -d
@@ -26,15 +26,15 @@ dev-down:
 	docker-compose down
 
 test:
-	echo Testing...
-	go test ./...
-	echo Done!
+	@echo Testing...
+	@go test ./...
+	@echo Done!
 
 start: run
     
 stop:
-	echo "Stopping Fenix..."
-	taskkill /IM ${BINARY_NAME} /F
-	echo Stopped Fenix
+	@echo "Stopping Fenix..."
+	@taskkill /T /IM ${BINARY_NAME} /F
+	@echo Stopped Fenix
 
 restart: stop start

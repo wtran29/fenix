@@ -35,11 +35,13 @@ func (a *application) shutdown() {
 
 	// block until the waitgroup is empty
 	a.wg.Wait()
+
 }
 
 func (a *application) listenForShutdown() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
 	s := <-quit
 
 	a.App.InfoLog.Println("Received signal", s.String())
