@@ -3,7 +3,8 @@ package fenix
 import (
 	"fmt"
 	"log"
-	"net/http"
+	"net"
+	"net/rpc"
 	"os"
 	"strconv"
 	"strings"
@@ -33,6 +34,8 @@ var badgerCache *cache.BadgerCache
 
 var redisPool *redis.Pool
 var badgerConn *badger.DB
+
+var maintenanceMode bool
 
 type Fenix struct {
 	AppName       string
@@ -252,35 +255,6 @@ func (f *Fenix) Init(p initPaths) error {
 	return nil
 }
 
-// Startup the web server
-func (f *Fenix) ListenAndServe() {
-	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),
-		ErrorLog:     f.ErrorLog,
-		Handler:      f.Routes,
-		IdleTimeout:  30 * time.Second,
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 600 * time.Second,
-	}
-
-	if f.DB.Pool != nil {
-		defer f.DB.Pool.Close()
-	}
-
-	if redisPool != nil {
-		defer redisPool.Close()
-
-	}
-
-	if badgerConn != nil {
-		defer badgerConn.Close()
-	}
-
-	f.InfoLog.Printf("Listening on port %s", os.Getenv("PORT"))
-	err := srv.ListenAndServe()
-	f.ErrorLog.Fatal(err)
-}
-
 func (f *Fenix) checkDotEnv(path string) error {
 	err := f.CreateDirIfNotExist(fmt.Sprintf("%s/.env", path))
 	if err != nil {
@@ -454,4 +428,41 @@ func (f *Fenix) createFileSystems() map[string]interface{} {
 
 	return fileSystems
 
+}
+
+type RPCServer struct{}
+
+func (r *RPCServer) MaintenanceMode(inMaintenanceMode bool, resp *string) error {
+	if inMaintenanceMode {
+		maintenanceMode = true
+		*resp = "Server in maintenance mode"
+	} else {
+		maintenanceMode = false
+		*resp = "Server live!"
+	}
+	return nil
+}
+
+func (f *Fenix) listenRPC() {
+	// if nothing specified for rpc port, do not start
+	if os.Getenv("RPC_PORT") != "" {
+		f.InfoLog.Println("Starting RPC server on port", os.Getenv("RPC_PORT"))
+		err := rpc.Register(new(RPCServer))
+		if err != nil {
+			f.ErrorLog.Println(err)
+			return
+		}
+		listen, err := net.Listen("tcp", "127.0.0.1:"+os.Getenv("RPC_PORT"))
+		if err != nil {
+			f.ErrorLog.Println(err)
+			return
+		}
+		for {
+			rpcConn, err := listen.Accept()
+			if err != nil {
+				continue
+			}
+			go rpc.ServeConn(rpcConn)
+		}
+	}
 }
