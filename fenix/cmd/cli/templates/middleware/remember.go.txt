@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"myapp/data"
 	"fmt"
+	"myapp/data"
 	"net/http"
 	"strconv"
 	"strings"
