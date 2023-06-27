@@ -312,3 +312,10 @@ func (h *Handlers) PostFenixUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/upload", http.StatusSeeOther)
 }
+
+func (h *Handlers) Clicker(w http.ResponseWriter, r *http.Request) {
+	err := h.render(w, r, "tester", nil, nil)
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+	}
+}

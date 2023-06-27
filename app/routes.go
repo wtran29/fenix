@@ -24,6 +24,7 @@ func (a *application) routes() *chi.Mux {
 	a.get("/go-page", a.Handlers.GoPage)
 	a.get("/jet-page", a.Handlers.JetPage)
 	a.get("/sessions", a.Handlers.SessionTest)
+	a.get("/tester", a.Handlers.Clicker)
 
 	a.get("/users/login", a.Handlers.UserLogin)
 	a.post("/users/login", a.Handlers.PostUserLogin)
